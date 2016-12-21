@@ -1,0 +1,15 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a [routerLink]="['/']" class="navbar-brand" >SQ</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a [routerLink]="['/profile', id]" >Home</a></li>
+      <li><a [routerLink]="['/games']" >Games</a></li>
+    </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <li><a [routerLink]="['/signup']" ><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a [routerLink]="['/login']" ><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    </ul>
+  </div>
+</nav>
