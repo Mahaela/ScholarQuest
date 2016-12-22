@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { SignupService } from '../signup.service.ts';
+import { SignupService } from '../signup.service';
 
 @Component({
   selector: 'sq-capacity-signup',

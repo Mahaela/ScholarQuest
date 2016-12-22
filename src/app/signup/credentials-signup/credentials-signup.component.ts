@@ -8,7 +8,8 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
-import { SignupService } from '../signup.service.ts';
+import { SignupService } from '../signup.service';
+import { HttpSignupService } from '../http-signup/http-signup.service';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { SignupService } from '../signup.service.ts';
 export class CredentialsSignupComponent {
     signupForm: FormGroup;
 
-    constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService) {
+    constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService, private httpService: HttpSignupService) {
 
         //return to the previous screen if there is no value for role
         if (!this.signupService.getRole()) {
@@ -43,7 +44,10 @@ export class CredentialsSignupComponent {
     onSubmit() {
         this.signupService.setFirstName(this.signupForm.controls['firstName'].value);
         this.signupService.setLastName(this.signupForm.controls['lastName'].value);
-        this.signupService.setPwd(this.signupForm.controls['pwd1'].value);
+        this.signupService.setPwd(this.signupForm.get(['passwords', 'pwd1']).value);
+        this.signupService.setEmail(this.signupForm.controls['email'].value);
+        var userInfo = this.signupService.getUserInfo();
+        this.httpService.sendUnverifiedData(userInfo).subscribe(data => console.log(data));
         this.router.navigate(['/signup/emailconf']);
     }
 

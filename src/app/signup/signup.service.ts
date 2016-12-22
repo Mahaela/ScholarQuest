@@ -6,6 +6,7 @@ export class SignupService {
     private firstName: string;
     private lastName: string;
     private pwd: string;
+    private email: string;
 
     constructor() { }
 
@@ -39,5 +40,17 @@ export class SignupService {
 
     getPwd(): string {
         return this.pwd;
+    }
+
+    setEmail(email: string) {
+        this.email = email;
+    }
+
+    getEmail(): string {
+        return this.email;
+    }
+
+    getUserInfo(): Object {
+       return {role: this.role, first: this.firstName, last: this.lastName, pwd: this.pwd, email: this.email };
     }
 }
