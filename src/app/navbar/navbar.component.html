@@ -1,15 +1,16 @@
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
       <a [routerLink]="['/']" class="navbar-brand" >SQ</a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a [routerLink]="['/profile', id]" >Home</a></li>
+      <li><a [routerLink]="['/profile']">Home</a></li>
       <li><a [routerLink]="['/games']" >Games</a></li>
     </ul>
       <ul class="nav navbar-nav navbar-right">
-      <li><a [routerLink]="['/signup']" ><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a [routerLink]="['/login']" ><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li *ngIf="!loggedIn()"><a [routerLink]="['/signup']" ><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li *ngIf="!loggedIn()"><a [routerLink]="['/login']" ><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li *ngIf="loggedIn()"><a (click)="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
     </ul>
   </div>
 </nav>

@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Http, Response, Headers } from "@angular/http";
+import 'rxjs/Rx';
+import { Observable } from "rxjs/Rx";
 
 @Injectable()
 export class SignupService {
@@ -8,7 +11,7 @@ export class SignupService {
     private pwd: string;
     private email: string;
 
-    constructor() { }
+    constructor(private http: Http) { }
 
     setRole(role: string) {
         this.role = role;
@@ -51,6 +54,19 @@ export class SignupService {
     }
 
     getUserInfo(): Object {
-       return {role: this.role, first: this.firstName, last: this.lastName, pwd: this.pwd, email: this.email };
+       return {role: this.role, first: this.firstName, last: this.lastName, pwd: this.pwd, email: this.email, coins: '0', avatar: '0', cursor: '0',  cursorFollower: '0' };
+    }
+
+    getData() {
+        return this.http.get('https://scholar-quest.firebaseio.com/AccountsUnverified.json').map((response: Response) => response.json());
+    }
+
+    sendUnverifiedData() {
+        const user = this.getUserInfo();
+        const body = JSON.stringify(user);
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        return this.http.post('https://scholar-quest.firebaseio.com/AccountsUnverified.json', body, { headers: headers })
+            .map((data: Response) => data.json());
     }
 }

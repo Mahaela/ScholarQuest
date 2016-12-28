@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
     FormGroup,
     FormControl,
@@ -9,8 +9,6 @@ import {
 import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { SignupService } from '../signup.service';
-import { HttpSignupService } from '../http-signup/http-signup.service';
-
 
 @Component({
     selector: 'sq-credentials-signup',
@@ -20,9 +18,10 @@ import { HttpSignupService } from '../http-signup/http-signup.service';
 })
 export class CredentialsSignupComponent {
     signupForm: FormGroup;
-
-    constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService, private httpService: HttpSignupService) {
-
+    accounts: any[];
+    emailTaken = false;
+    constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService) {
+               
         //return to the previous screen if there is no value for role
         if (!this.signupService.getRole()) {
             this.router.navigate(['/signup/']);
@@ -41,13 +40,32 @@ export class CredentialsSignupComponent {
         });
     }
 
+    ngOnInit() {
+        this.signupService.getData().subscribe(
+            data => {
+                const a = [];
+                for (let key in data) {
+                    a.push(data[key]);
+                }
+                this.accounts = a;
+            }
+        );
+    }
+
+
     onSubmit() {
+
+        for (let i in this.accounts) {
+            if (this.accounts[i]['email'] == this.signupForm.controls['email'].value) {
+                this.emailTaken = true;
+                return
+            }
+        }
         this.signupService.setFirstName(this.signupForm.controls['firstName'].value);
         this.signupService.setLastName(this.signupForm.controls['lastName'].value);
         this.signupService.setPwd(this.signupForm.get(['passwords', 'pwd1']).value);
         this.signupService.setEmail(this.signupForm.controls['email'].value);
-        var userInfo = this.signupService.getUserInfo();
-        this.httpService.sendUnverifiedData(userInfo).subscribe(data => console.log(data));
+        this.signupService.sendUnverifiedData().subscribe();
         this.router.navigate(['/signup/emailconf']);
     }
 
@@ -76,5 +94,6 @@ export class CredentialsSignupComponent {
             return { example: true };
         }
     }
+
 }
 

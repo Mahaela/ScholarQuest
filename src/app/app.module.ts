@@ -1,5 +1,3 @@
-/// <reference path="signup/http-signup/http-signup.service.ts" />
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -13,12 +11,14 @@ import { EmailConfirmationComponent } from './signup/email-confirmation/email-co
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
-import { UserProfileComponent } from './user-profile/user-profile.component';
-import { GamesComponent } from './games/games.component';
+import { UserProfileComponent } from './student/user-profile/user-profile.component';
+import { GamesComponent } from './student/games/games.component';
 import { routing } from './app.routing';
 import { SignupComponent } from './signup/signup.component';
 import { SignupService } from './signup/signup.service';
-import { HttpSignupService } from './signup/http-signup/http-signup.service';
+import { LoginService } from './login/login.service';
+import { StudentService } from './student/student.service';
+
 
 @NgModule({
   declarations: [
@@ -40,7 +40,7 @@ import { HttpSignupService } from './signup/http-signup/http-signup.service';
       ReactiveFormsModule,
     routing
   ],
-  providers: [SignupService, HttpSignupService ],
+  providers: [SignupService, StudentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,15 +1,58 @@
 import { Component, OnInit } from '@angular/core';
+import {
+    FormGroup,
+    FormControl,
+    FormBuilder,
+    Validators
+} from '@angular/forms';
+import { Observable } from 'rxjs/Rx';
+import { Response } from '@angular/http';
+import { Router } from '@angular/router';
+
+import { LoginService } from './login.service';
+import { StudentService } from '../student/student.service';
+
+
 
 @Component({
-  selector: 'sq-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+    selector: 'sq-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    providers: [LoginService]
 })
 export class LoginComponent implements OnInit {
+    loginForm: FormGroup;
+    data: Response;
+    accounts: any[] = [];
+    incUsernameOrPwd: boolean = false;
 
-  constructor() { }
+    constructor(private formBuilder: FormBuilder, private loginService: LoginService, private router: Router, private studentService: StudentService) {
+        this.loginForm = formBuilder.group({
+            email: ['', Validators.required],
+            pwd: ['', Validators.required]
+        });
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit(){
+        this.loginService.getData().subscribe(
+            data => {
+                const a = [];
+                for (let key in data) {
+                    a.push(data[key]);
+                }
+                this.accounts = a;
+            }
+        );
+    }
 
+    onSubmit() {
+        for (let i in this.accounts) {
+            if (this.accounts[i]['email'] == this.loginForm.controls['email'].value
+                && this.accounts[i]['pwd'] == this.loginForm.controls['pwd'].value) {
+                this.studentService.setUserInfo(this.accounts[i]);
+                this.router.navigate(['/profile']);
+            }
+        }
+        this.incUsernameOrPwd = true;
+   }
 }

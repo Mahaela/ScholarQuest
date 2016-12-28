@@ -1,6 +1,6 @@
 {
-  "name": "scholar-quest",
-  "version": "0.0.0",
+  "name": "mailgunemail",
+  "version": "0.0.1",
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
@@ -21,7 +21,10 @@
     "@angular/platform-browser-dynamic": "2.2.1",
     "@angular/router": "3.2.1",
     "core-js": "^2.4.1",
+    "google-auth-library": "^0.9.10",
+    "googleapis": "^15.0.0",
     "rxjs": "5.0.0-beta.12",
+    "sendgrid": "^4.7.1",
     "ts-helpers": "^1.1.1",
     "zone.js": "^0.6.23"
   },
@@ -43,5 +46,16 @@
     "tslint": "3.13.0",
     "typescript": "~2.0.3",
     "webdriver-manager": "10.2.5"
-  }
+  },
+  "description": "This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.21.",
+  "main": "karma.conf.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mahaela/ScholarQuest.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/Mahaela/ScholarQuest/issues"
+  },
+  "homepage": "https://github.com/Mahaela/ScholarQuest#readme"
 }
