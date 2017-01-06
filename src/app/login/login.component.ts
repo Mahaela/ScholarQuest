@@ -36,20 +36,16 @@ export class LoginComponent implements OnInit {
     ngOnInit(){
         this.loginService.getData().subscribe(
             data => {
-                const a = [];
-                for (let key in data) {
-                    a.push(data[key]);
-                }
-                this.accounts = a;
+                this.accounts = data;
             }
         );
     }
 
-    onSubmit() {
+    onSubmit() {    
         for (let i in this.accounts) {
             if (this.accounts[i]['email'] == this.loginForm.controls['email'].value
                 && this.accounts[i]['pwd'] == this.loginForm.controls['pwd'].value) {
-                this.studentService.setUserInfo(this.accounts[i]);
+                this.studentService.setUserInfo(this.accounts[i], i);
                 this.router.navigate(['/profile']);
             }
         }
