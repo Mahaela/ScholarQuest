@@ -7,6 +7,5 @@ import 'rxjs/Rx';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    title = 'sq works!';
-
+  title = 'sq works!';
 }

@@ -31,7 +31,7 @@ import { StudentService } from './student/student.service';
       HomeComponent,
       UserProfileComponent,
       GamesComponent,
-      SignupComponent
+      SignupComponent,
   ],
   imports: [
     BrowserModule,
