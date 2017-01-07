@@ -1,0 +1,31 @@
+#avatarImg {
+    width: 250px;
+    height: 500px;
+}
+
+#avatarLArrow {
+    position: absolute;
+    top:200px;
+    width: 25px;
+    height:25px;
+    left: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+#avatarRArrow {
+    position: absolute;
+    top:200px;
+    width: 25px;
+    height:25px;
+    right: 5px;
+    cursor: pointer;   
+    display: none;
+}
+
+#avatarWrapper{
+    position: relative;
+    width:256px;
+    height:506px;
+    border: solid black; 
+}

@@ -1,3 +1,17 @@
-<p>
-  user-profile works!
-</p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+        <div id="avatarWrapper" (mouseenter)="showArrows(lArrow, rArrow)" (mouseleave)="hideArrows(lArrow, rArrow)">
+            <img [src]="activeAvatarImg" id="avatarImg" />
+            <img src="../../assets/clipArt/ArrowRight.png" id="avatarRArrow" (click)="avatarScrollUp(avatarImgs)" (mouseover)="showArrows(lArrow, rArrow)"#lArrow/>
+            <img src="../../assets/clipArt/ArrowLeft.png" id="avatarLArrow" (click)="avatarScrollDown(avatarImgs)" (mouseover)="showArrows(lArrow, rArrow)"#rArrow/>
+        </div>
+      </div>
+    <div class="col-sm-4">
+
+    </div>
+    <div class="col-sm-4">
+      
+    </div>
+  </div>
+</div>
