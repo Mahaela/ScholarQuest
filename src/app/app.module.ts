@@ -18,6 +18,8 @@ import { SignupComponent } from './signup/signup.component';
 import { SignupService } from './signup/signup.service';
 import { LoginService } from './login/login.service';
 import { StudentService } from './student/student.service';
+import { AvatarComponent } from './student/user-profile/avatar/avatar.component';
+import { CursorFollowerComponent } from './student/user-profile/cursor-follower/cursor-follower.component';
 
 
 @NgModule({
@@ -32,6 +34,8 @@ import { StudentService } from './student/student.service';
       UserProfileComponent,
       GamesComponent,
       SignupComponent,
+      AvatarComponent,
+      CursorFollowerComponent,
   ],
   imports: [
     BrowserModule,

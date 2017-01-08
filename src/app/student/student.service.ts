@@ -37,14 +37,12 @@ export class StudentService {
 
     setAvatar(avatar: string | number) {
         this.avatar = Number(avatar);
-        const av = { "avatar": "5" }
-        const body = JSON.stringify(av);
+        var URL = 'https://scholar-quest.firebaseio.com/AccountsUnverified/' + this.key + '/avatar.json';
+        const body = JSON.stringify(this.avatar);
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        headers.append('Allow-Control-Allow-Origin', '*');
-        headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-        return this.http.put('https://scholar-quest.firebaseio.com/AccountsUnverified/-KZxuNRW-JZo6Sv7Og7a/avatar', body, { headers: headers })
-            .subscribe((data: Response) => console.log(data));
+       
+        return this.http.put(URL, body, { headers: headers }).subscribe();
     }
 
     getAvatar(): number {
@@ -70,7 +68,7 @@ export class StudentService {
     setUserInfo(userInfo: any, key: string) {
         this.setName(userInfo['first']);
         this.setCoins(userInfo['coins']);
-        this.setAvatar(userInfo['avatar']);
+        this.avatar = userInfo['avatar'];
         this.setCursor(userInfo['cursor']);
         this.setCursorFollower(userInfo['cursorFollower']);
         this.key = key;
