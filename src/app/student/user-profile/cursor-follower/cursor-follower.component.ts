@@ -1,15 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Renderer, ViewChild } from '@angular/core';
+import { StudentService } from '../../student.service';
 
 @Component({
   selector: 'sq-cursor-follower',
   templateUrl: './cursor-follower.component.html',
   styleUrls: ['./cursor-follower.component.css']
 })
-export class CursorFollowerComponent implements OnInit {
+export class CursorFollowerComponent  {
+    private cursorFollower0 = '../../../assets/clip-art/None.png';
+    private cursorFollower1 = '../../../assets/cursor-followers/EyesFollower.jpg';
+    private cursorFollowers = [this.cursorFollower0, this.cursorFollower1];
+    private activeCursorFollower: number;
 
-  constructor() { }
+    constructor(private renderer: Renderer, private studentService: StudentService) {
+        this.activeCursorFollower = studentService.getCursorFollower();
+    }
 
-  ngOnInit() {
-  }
+    highlight($event) {
+            this.renderer.setElementStyle(event.srcElement, 'background', 'green');
+    }
+
+    removeHighlight($event) {
+        this.renderer.setElementStyle(event.srcElement, 'background', 'none');
+    }
+
+    changeCursorFollower(i) {
+        this.studentService.setCursorFollower(i);
+    }
 
 }

@@ -20,6 +20,7 @@ import { LoginService } from './login/login.service';
 import { StudentService } from './student/student.service';
 import { AvatarComponent } from './student/user-profile/avatar/avatar.component';
 import { CursorFollowerComponent } from './student/user-profile/cursor-follower/cursor-follower.component';
+import { EyesComponent } from './student/user-profile/cursor-follower/eyes/eyes.component';
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { CursorFollowerComponent } from './student/user-profile/cursor-follower/
       SignupComponent,
       AvatarComponent,
       CursorFollowerComponent,
+      EyesComponent
   ],
   imports: [
     BrowserModule,

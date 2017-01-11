@@ -1,5 +1,4 @@
 import { Component, trigger, style, state, transition, animate } from '@angular/core';
-import { Router } from '@angular/router';
 import { StudentService } from '../../student.service';
 
 @Component({
@@ -22,18 +21,11 @@ export class AvatarComponent  {
     private avatarImg1 = '../../../assets/avatars/Mogul.jpg';
     private avatarImg2 = '../../../assets/avatars/SailorMoon.jpg';
     private avatarImg3 = '../../../assets/avatars/TuxedoMask.jpg';
-    
     private avatarImgs = [this.avatarImg0, this.avatarImg1, this.avatarImg2, this.avatarImg3];
 
-    constructor(private router: Router, private studentService: StudentService) {
-        ////leave page if not logged in
-        //if (this.studentService.getName() == '') {
-        //    this.router.navigate(['']);
-        //}
-        this.firstAvatarImg = this.avatarImgs[0];
+    constructor(private studentService: StudentService) {
+        this.firstAvatarImg = this.avatarImgs[studentService.getAvatar()];
         this.secondAvatarImg = this.avatarImgs[0];
-        
-            //this.avatarImgs[studentService.getAvatar()];
     }
 
     arrows() {
@@ -51,6 +43,7 @@ export class AvatarComponent  {
             }
             this.firstAvatarState = 'hidden';
             this.secondAvatarState = 'visible';
+            this.studentService.setAvatar(this.avatarImgs.indexOf(this.secondAvatarImg));
         }
         else {
             if (this.avatarImgs.indexOf(this.secondAvatarImg) == this.avatarImgs.length - 1) {
@@ -61,6 +54,7 @@ export class AvatarComponent  {
                 }  
             this.firstAvatarState = 'visible';
             this.secondAvatarState = 'hidden';
+            this.studentService.setAvatar(this.avatarImgs.indexOf(this.firstAvatarImg));
         }
     }
 

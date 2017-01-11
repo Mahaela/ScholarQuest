@@ -1,3 +1,5 @@
-<p>
-  cursor-follower works!
-</p>
+<div id="border">
+    <ul>
+        <li *ngFor="let item of cursorFollowers; let i = index"><div class="imgWrapper" (mouseenter)="highlight()" (mouseleave)="removeHighlight()" (click)="changeCursorFollower(i)"><img [src] ="cursorFollowers[i]" class="cursorFollower" /></div></li>
+    </ul>
+</div> 

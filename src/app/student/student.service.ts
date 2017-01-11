@@ -41,7 +41,6 @@ export class StudentService {
         const body = JSON.stringify(this.avatar);
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
-       
         return this.http.put(URL, body, { headers: headers }).subscribe();
     }
 
@@ -58,7 +57,11 @@ export class StudentService {
     }
 
     setCursorFollower(cursorFollower) {
-        return this.cursorFollower;
+        var URL = 'https://scholar-quest.firebaseio.com/AccountsUnverified/' + this.key + '/cursorFollower.json';
+        const body = JSON.stringify(this.cursorFollower);
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        return this.http.put(URL, body, { headers: headers }).subscribe();
     }
 
     getCursorFollower(): number {
