@@ -22,14 +22,14 @@ export class EyesComponent implements AfterViewInit  {
     private moveState = "state1";
     private eyesCenterX = 0;
     private eyesCenterY = 0;
-    @ViewChild('lOEye') leftEye;
-    @ViewChild('lIEye') leftEyeball;
-    @ViewChild('rOEye') rightEye;
-    @ViewChild('rIEye') rightEyeball;
+    @ViewChild('lOEye') leftEye : ElementRef;
+    @ViewChild('lIEye') leftEyeball: ElementRef;
+    @ViewChild('rOEye') rightEye: ElementRef;
+    @ViewChild('rIEye') rightEyeball: ElementRef;
     private xDormant = true;
     private lerpSpeed = 0.05;
     private eyeSize = 30;
-    private eyeballSize = 4;
+    private eyeballSize = 8;
     private eyeballCen = 0;
     @Input() xPos = 0;
     @Input() yPos = 0;
@@ -59,7 +59,7 @@ export class EyesComponent implements AfterViewInit  {
             window.innerHeight / 2 + this.eyeSize / 2 + 'px');
 
         //begining positions of the eyeblls
-        this.eyeballCen = this.eyeSize / 2 - this.eyeballSize - this.eyeballSize/2;
+        this.eyeballCen = this.eyeSize / 2  -  this.eyeballSize + 1;
         this.renderer.setElementStyle(this.leftEyeball.nativeElement, 'left', this.eyeballCen + 'px');
         this.renderer.setElementStyle(this.leftEyeball.nativeElement, 'top', this.eyeballCen + 'px');
         this.renderer.setElementStyle(this.rightEyeball.nativeElement, 'left', this.eyeballCen + 'px');
@@ -109,19 +109,19 @@ export class EyesComponent implements AfterViewInit  {
                 parseFloat(this.leftEye.nativeElement.style.left) + 2 * this.eyeSize + 'px');
             this.renderer.setElementStyle(this.rightEye.nativeElement, 'top',
                 leftEyeTopDist + (ySpeed * this.lerpSpeed * (this.yPos + topBottom - leftEyeTopDist)) + 'px');
-            this.moveState == 'state1' ? this.moveState = 'state2' : this.moveState = 'state1';
-            }
-        
-//    }
 
-//    moveEyeballs(leftOffset: number, leftEyeLeftDist: number, leftEyeTopDist: number) {
-//        var eyeballDist = Math.sqrt(Math.pow(this.xPos + leftOffset - leftEyeLeftDist, 2) + Math.pow(this.yPos - leftEyeTopDist, 2));
-//        var xEBNorm = (this.xPos + leftOffset - leftEyeLeftDist) / eyeballDist;
-//        var yEBNorm = (this.yPos - leftEyeTopDist) / eyeballDist;
+            this.moveEyeballs(leftOffset, leftEyeLeftDist, leftEyeTopDist);
+            this.moveState == 'state1' ? this.moveState = 'state2' : this.moveState = 'state1'; 
+        }
 
-//        this.leftEyeball.style.left = this.eyeballCen + (this.eyeSize / 2 - this.eyeballSize / 2) * xEBNorm + "px";
-//        this.leftEyeball.style.top = this.eyeballCen + (this.eyeSize / 2 - this.eyeballSize / 2) * yEBNorm + "px";
-//        this.rightEyeball.style.left = this.eyeballCen + (this.eyeSize / 2 - this.eyeballSize / 2) * xEBNorm + "px";
-//        this.rightEyeball.style.top = this.eyeballCen + (this.eyeSize / 2 - this.eyeballSize / 2) * yEBNorm + "px";
+    moveEyeballs(leftOffset: number, leftEyeLeftDist: number, leftEyeTopDist: number) {
+        var eyeballDist = Math.sqrt(Math.pow(this.xPos + leftOffset - leftEyeLeftDist, 2) + Math.pow(this.yPos - leftEyeTopDist, 2));
+        var xEBNorm = (this.xPos + leftOffset - leftEyeLeftDist) / eyeballDist;
+        var yEBNorm = (this.yPos - leftEyeTopDist) / eyeballDist;
+
+        this.renderer.setElementStyle(this.leftEyeball.nativeElement, 'left', this.eyeballCen + (this.eyeSize / 2 - this.eyeballSize / 2) * xEBNorm + 'px');
+        this.renderer.setElementStyle(this.leftEyeball.nativeElement, 'top', this.eyeballCen + (this.eyeSize / 2 - this.eyeballSize / 2) * yEBNorm + 'px');
+        this.renderer.setElementStyle(this.rightEyeball.nativeElement, 'left', this.eyeballCen + (this.eyeSize / 2 - this.eyeballSize / 2) * xEBNorm + 'px');
+        this.renderer.setElementStyle(this.rightEyeball.nativeElement, 'top', this.eyeballCen + (this.eyeSize / 2 - this.eyeballSize / 2) * yEBNorm + 'px');
     }
 }

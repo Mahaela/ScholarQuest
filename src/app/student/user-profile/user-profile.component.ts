@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-
 @Component({
     selector: 'sq-user-profile',
     templateUrl: './user-profile.component.html',

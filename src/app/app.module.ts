@@ -21,7 +21,7 @@ import { StudentService } from './student/student.service';
 import { AvatarComponent } from './student/user-profile/avatar/avatar.component';
 import { CursorFollowerComponent } from './student/user-profile/cursor-follower/cursor-follower.component';
 import { EyesComponent } from './student/user-profile/cursor-follower/eyes/eyes.component';
-
+import { HighlightCursorFollowerDirective } from './student/user-profile/cursor-follower/highlight-cursor-follower.directive';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,8 @@ import { EyesComponent } from './student/user-profile/cursor-follower/eyes/eyes.
       SignupComponent,
       AvatarComponent,
       CursorFollowerComponent,
-      EyesComponent
+      EyesComponent,
+      HighlightCursorFollowerDirective
   ],
   imports: [
     BrowserModule,

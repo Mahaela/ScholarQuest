@@ -16,15 +16,8 @@ export class CursorFollowerComponent  {
         this.activeCursorFollower = studentService.getCursorFollower();
     }
 
-    highlight($event) {
-            this.renderer.setElementStyle(event.srcElement, 'background', 'green');
-    }
-
-    removeHighlight($event) {
-        this.renderer.setElementStyle(event.srcElement, 'background', 'none');
-    }
-
     changeCursorFollower(i) {
+        this.activeCursorFollower = i;
         this.studentService.setCursorFollower(i);
     }
 
