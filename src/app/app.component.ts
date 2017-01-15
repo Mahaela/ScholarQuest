@@ -1,5 +1,5 @@
 import { Component, HostListener, EventEmitter, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import 'rxjs/Rx'; 
+import { StudentService } from './student/student.service';
 
 @Component({
   selector: 'sq-root',
@@ -7,11 +7,12 @@ import 'rxjs/Rx';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements AfterViewInit{
-    private xPos;
-    private yPos;
+    private xPos = 0;
+    private yPos = 0;
+    private cursorFollower = '0';
     @ViewChild('canvas') canvas: ElementRef;
-
-    constructor() { }
+    
+    constructor(private studentService: StudentService) { }
 
     ngAfterViewInit() {
         this.canvas.nativeElement.style.width = window.innerWidth + "px";
@@ -29,6 +30,5 @@ export class AppComponent implements AfterViewInit{
          this.canvas.nativeElement.style.width = window.innerWidth + "px";
          this.canvas.nativeElement.style.height = window.innerHeight +"px";
     }
-
     
 }

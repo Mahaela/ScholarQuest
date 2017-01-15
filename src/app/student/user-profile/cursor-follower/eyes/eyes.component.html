@@ -1,4 +1,6 @@
-<div class="outerEye" id="lOEye" #lOEye [@move]="moveState" (@move.done)="onDone($event)">    
-     <div class="innerEye" id="lIEye" #lIEye [@show]="show"></div></div>
-<div class="outerEye" id="rOEye" #rOEye [@show]="show">
-     <div class="innerEye" id="rIEye" #rIEye [@show]="show"></div></div>
+<div [@show]="show">
+    <div class="outerEye" id="lOEye" #lOEye [@move]="moveState" (@move.done)="onDone($event)" >    
+        <div class="innerEye" id="lIEye" #lIEye ></div></div>
+    <div class="outerEye" id="rOEye" #rOEye >
+        <div class="innerEye" id="rIEye" #rIEye ></div></div>
+</div>

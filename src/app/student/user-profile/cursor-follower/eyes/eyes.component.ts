@@ -9,16 +9,16 @@ import { Component, ElementRef, ViewChild, Renderer, AfterViewInit, Input, trigg
       trigger('show', [
           state('*', style({ 'opacity': 1 })),
           state('void', style({ 'opacity': 0 })),
-          transition('void => *', animate(3000))]),
+          transition('void => *', animate(5000))]),
       trigger('move', [
           state('void', style({ 'opacity': 0 })),
           state('state1', style({ 'opacity': 1 })),
           state('state2', style({ 'opacity': 1 })),
           transition('state1 <=> state2', animate(1)),
-          transition('void <=> state1', animate(3000))])
+          transition('void => state1', animate(1))])
       ]
 })
-export class EyesComponent implements AfterViewInit  {
+export class EyesComponent implements AfterViewInit{
     private moveState = "state1";
     private eyesCenterX = 0;
     private eyesCenterY = 0;
@@ -31,9 +31,8 @@ export class EyesComponent implements AfterViewInit  {
     private eyeSize = 30;
     private eyeballSize = 8;
     private eyeballCen = 0;
-    @Input() xPos = 0;
-    @Input() yPos = 0;
-
+    @Input() xPos = 900;
+    @Input() yPos = 200;
 
     ngAfterViewInit() {
         //set the size of the outer eye
@@ -71,10 +70,6 @@ export class EyesComponent implements AfterViewInit  {
         this.moveEyes();
     }
 
-    onDoneShow($event) {
-        this.moveEyes();
-    }
-
     constructor(private renderer: Renderer) { }
 
     moveEyes() {
@@ -98,13 +93,8 @@ export class EyesComponent implements AfterViewInit  {
             var xSpeed = Math.abs(xNorm);
             var ySpeed = Math.abs(yNorm);
 
-           // this.leftEye.nativeElement.style.left = leftEyeLeftDist + (xSpeed * this.lerpSpeed * (this.xPos + leftOffset - leftEyeLeftDist)) + "px";
-           // this.leftEye.nativeElement.style.top = leftEyeTopDist + (ySpeed * this.lerpSpeed * (this.yPos + topBottom - leftEyeTopDist)) + "px";
             this.renderer.setElementStyle(this.leftEye.nativeElement, 'left', leftEyeLeftDist + (xSpeed * this.lerpSpeed * (this.xPos + leftOffset - leftEyeLeftDist)) + 'px');
             this.renderer.setElementStyle(this.leftEye.nativeElement, 'top', leftEyeTopDist + (ySpeed * this.lerpSpeed * (this.yPos + topBottom - leftEyeTopDist)) + 'px');
-//            this.rightEye.style.left = parseFloat(this.leftEye.nativeElement.style.left) + 2 * this.eyeSize + "px";
-//            this.rightEye.style.top = parseFloat(this.leftEye.nativeElement.style.top) + "px";
-//            this.moveEyeballs(leftOffset, leftEyeLeftDist, leftEyeTopDist);
             this.renderer.setElementStyle(this.rightEye.nativeElement, 'left',
                 parseFloat(this.leftEye.nativeElement.style.left) + 2 * this.eyeSize + 'px');
             this.renderer.setElementStyle(this.rightEye.nativeElement, 'top',

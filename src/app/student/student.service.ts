@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from "@angular/http";
 import 'rxjs/Rx';
 import { Observable } from "rxjs/Rx";
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class StudentService {
@@ -10,7 +11,8 @@ export class StudentService {
     private coins = 0;
     private avatar = 0;
     private cursor = 0;
-    private cursorFollower = 0;
+    private cursorFollower = new BehaviorSubject<number>(0);
+    public cursorFollowerObs = this.cursorFollower.asObservable();
 
     constructor(private http: Http) {
     }
@@ -57,23 +59,24 @@ export class StudentService {
     }
 
     setCursorFollower(cursorFollower) {
+        this.cursorFollower.next(cursorFollower);
         var URL = 'https://scholar-quest.firebaseio.com/AccountsUnverified/' + this.key + '/cursorFollower.json';
-        const body = JSON.stringify(this.cursorFollower);
+        const body = JSON.stringify(this.cursorFollower.value);
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         return this.http.put(URL, body, { headers: headers }).subscribe();
     }
 
     getCursorFollower(): number {
-        return this.cursorFollower;
+        return this.cursorFollower.value;
     }
 
     setUserInfo(userInfo: any, key: string) {
-        this.setName(userInfo['first']);
-        this.setCoins(userInfo['coins']);
-        this.avatar = userInfo['avatar'];
-        this.setCursor(userInfo['cursor']);
-        this.setCursorFollower(userInfo['cursorFollower']);
+        this.name = userInfo['first'];
+        this.coins = Number(userInfo['coins']);
+        this.avatar = Number(userInfo['avatar']);
+        this.cursor = Number(userInfo['cursor']);
+        this.cursorFollower.next(Number(userInfo['cursorFollower']));
         this.key = key;
     }
 
@@ -82,7 +85,7 @@ export class StudentService {
         this.coins = 0;
         this.avatar = 0;
         this.cursor = 0;
-        this.cursorFollower = 0;
+        this.cursorFollower.next(0);
         this.key = '';
     }
 }

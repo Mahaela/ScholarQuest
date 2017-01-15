@@ -28,3 +28,10 @@ ul{
     cursor: pointer;
 }
 
+#selected{
+    background: green;
+}
+
+#hovering{
+    background: blue;
+}
