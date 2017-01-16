@@ -25,6 +25,9 @@ import { HighlightCursorFollowerDirective } from './student/user-profile/cursor-
 import { CursorFollowerService } from './student/user-profile/cursor-follower/cursor-follower.service';
 import { CursorButtonsComponent } from './student/user-profile/cursor/cursor-buttons/cursor-buttons.component';
 import { CursorDisplayComponent } from './student/user-profile/cursor/cursor-display/cursor-display.component';
+import { CursorService } from './student/user-profile/cursor/cursor.service';
+import { HighlightCursorDirective } from './student/user-profile/cursor/cursor-buttons/highlight-cursor.directive';
+import { CursorComponent } from './student/user-profile/cursor/cursor.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,9 @@ import { CursorDisplayComponent } from './student/user-profile/cursor/cursor-dis
       EyesComponent,
       HighlightCursorFollowerDirective,
       CursorButtonsComponent,
-      CursorDisplayComponent
+      CursorDisplayComponent,
+      HighlightCursorDirective,
+      CursorComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +58,7 @@ import { CursorDisplayComponent } from './student/user-profile/cursor/cursor-dis
       ReactiveFormsModule,
     routing
   ],
-  providers: [SignupService, StudentService, CursorFollowerService],
+  providers: [SignupService, StudentService, CursorFollowerService, CursorService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

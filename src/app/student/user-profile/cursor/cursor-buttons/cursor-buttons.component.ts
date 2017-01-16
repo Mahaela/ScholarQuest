@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CursorService } from '../cursor.service.ts';
 
 @Component({
   selector: 'sq-cursor-buttons',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CursorButtonsComponent implements OnInit {
 
-  constructor() { }
+    private buttonImgs: string[];
+
+    constructor(private cursorService: CursorService) {
+        this.buttonImgs = cursorService.getCursors();
+    }
 
   ngOnInit() {
   }

@@ -10,7 +10,7 @@ ul{
     margin-left: 15px;
 }
 
-.cursorFollower {
+.cursor {
     width: 185px;
     height: 185px;
     margin: auto;  
@@ -28,10 +28,17 @@ ul{
     cursor: pointer;
 }
 
-#selected{
+.background{
+    width: 185px;
+    height: 185px;
+    margin: auto;  
+    background: white;
+}
+
+#selectedCursor{
     background: green;
 }
 
-#hovering{
+#hoveringCursor{
     background: blue;
 }

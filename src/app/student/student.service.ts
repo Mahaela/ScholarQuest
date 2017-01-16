@@ -10,7 +10,8 @@ export class StudentService {
     private name = '';
     private coins = 0;
     private avatar = 0;
-    private cursor = 0;
+    private cursor = new BehaviorSubject<number>(0);
+    public cursorObs = this.cursor.asObservable();
     private cursorFollower = new BehaviorSubject<number>(0);
     public cursorFollowerObs = this.cursorFollower.asObservable();
 
@@ -50,12 +51,17 @@ export class StudentService {
         return this.avatar;
     }
 
-    setCursor(cursor: string) {
-        this.cursor = Number(cursor);
+    setCursor(cursor: number) {
+        this.cursor.next(cursor);
+        var URL = 'https://scholar-quest.firebaseio.com/AccountsUnverified/' + this.key + '/cursor.json';
+        const body = JSON.stringify(this.cursor.value);
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        return this.http.put(URL, body, { headers: headers }).subscribe();
     }
 
     getCursor(): number {
-        return this.cursor;
+        return this.cursor.value;
     }
 
     setCursorFollower(cursorFollower) {
@@ -75,7 +81,7 @@ export class StudentService {
         this.name = userInfo['first'];
         this.coins = Number(userInfo['coins']);
         this.avatar = Number(userInfo['avatar']);
-        this.cursor = Number(userInfo['cursor']);
+        this.cursor.next(Number(userInfo['cursor']));
         this.cursorFollower.next(Number(userInfo['cursorFollower']));
         this.key = key;
     }
@@ -84,7 +90,7 @@ export class StudentService {
         this.name = '';
         this.coins = 0;
         this.avatar = 0;
-        this.cursor = 0;
+        this.cursor.next(0);
         this.cursorFollower.next(0);
         this.key = '';
     }

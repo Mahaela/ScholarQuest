@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from "@angular/http";
 import 'rxjs/Rx';
 import { Observable } from "rxjs/Rx";
+declare var firebase: any;
 
 @Injectable()
 export class SignupService {
@@ -68,5 +69,16 @@ export class SignupService {
         headers.append('Content-Type', 'application/json');
         return this.http.post('https://scholar-quest.firebaseio.com/AccountsUnverified.json', body, { headers: headers })
             .map((data: Response) => data.json());
+    }
+
+    createUser(email: string, pwd: string) {
+        firebase.auth().createUserWithEmailAndPassword('testemail', 'testpassword').catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorMessage);
+            console.log(errorCode);
+            // ...
+        });
     }
 }

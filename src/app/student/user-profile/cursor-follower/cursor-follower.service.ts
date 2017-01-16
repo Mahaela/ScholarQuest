@@ -4,13 +4,11 @@ import { EyesComponent } from './eyes/eyes.component';
 
 @Injectable()
 export class CursorFollowerService {
-
     private cursorFollower0: CursorFollower;
     private cursorFollower1: CursorFollower;
     private cursorFollowers: CursorFollower[] = [];
 
     constructor() {
-        
         this.cursorFollower0 = new CursorFollower('../../../assets/clip-art/None.png', null);
         this.cursorFollower1 = new CursorFollower('../../../assets/cursor-followers/EyesFollower.jpg', EyesComponent);
         

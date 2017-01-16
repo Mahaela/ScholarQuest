@@ -61,12 +61,14 @@ export class CredentialsSignupComponent {
                 return
             }
         }
-        this.signupService.setFirstName(this.signupForm.controls['firstName'].value);
-        this.signupService.setLastName(this.signupForm.controls['lastName'].value);
-        this.signupService.setPwd(this.signupForm.get(['passwords', 'pwd1']).value);
-        this.signupService.setEmail(this.signupForm.controls['email'].value);
-        this.signupService.sendUnverifiedData().subscribe();
-        this.router.navigate(['/signup/emailconf']);
+        //this.signupService.setFirstName(this.signupForm.controls['firstName'].value);
+        //this.signupService.setLastName(this.signupForm.controls['lastName'].value);
+        //this.signupService.setPwd(this.signupForm.get(['passwords', 'pwd1']).value);
+        //this.signupService.setEmail(this.signupForm.controls['email'].value);
+        //this.signupService.sendUnverifiedData().subscribe();
+        //this.router.navigate(['/signup/emailconf']);
+
+        this.signupService.createUser(this.signupForm.controls['email'].value, this.signupForm.get(['passwords', 'pwd1']).value);
     }
 
     errorMessage(control: FormControl): boolean {
