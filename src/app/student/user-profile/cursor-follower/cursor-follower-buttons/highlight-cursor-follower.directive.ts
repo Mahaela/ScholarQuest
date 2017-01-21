@@ -31,7 +31,6 @@ export class HighlightCursorFollowerDirective implements OnInit {
     }
     @HostListener('click')
     onclick() {
-        this.studentService.setCursorFollower(this.index);
         var prevSelected = document.getElementById('selected');
         this.renderer.setElementAttribute(prevSelected, 'id', null);
         this.renderer.setElementAttribute(this.elementRef.nativeElement, 'id', 'selected');

@@ -1,11 +1,11 @@
 <div id="border">
     <ul>
         <li *ngFor="let item of buttonImgs; let i = index">
-            <div class="imgWrapper" sqHighlightCursor [index]="i">
+            <button class="imgWrapper" sqHighlightCursor [index]="i" (click) ="changeCursor(i)">
                 <div class="background">
-                    <img [src]="buttonImgs[i]" class="cursor" />
+                    <img [src]="buttonImgs[i]" class="cursor" /> 
                 </div>
-            </div>
+            </button>
         </li>
     </ul>
 </div> 

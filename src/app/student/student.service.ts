@@ -1,25 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from "@angular/http";
-import 'rxjs/Rx';
-import { Observable } from "rxjs/Rx";
+import { Observable, Subject} from "rxjs/Rx";
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+declare var firebase;
 
 @Injectable()
 export class StudentService {
-    private key = '';
     private name = '';
     private coins = 0;
     private avatar = 0;
-    private cursor = new BehaviorSubject<number>(0);
-    public cursorObs = this.cursor.asObservable();
-    private cursorFollower = new BehaviorSubject<number>(0);
-    public cursorFollowerObs = this.cursorFollower.asObservable();
+    private cursor = 0;
+    private cursorFollower = 0;
+    private cursorFollowerStartXPos = 0;
+    private cursorFollowerStartYPos = 0;
+    private cursorFollowerStartPosition = new Subject<number[]>();
+    public cursorFollowerStartPositionObs = this.cursorFollowerStartPosition.asObservable();
+    public cursorStartPosition = new Subject<number[]>();
+    public cursorStartPositionObs = this.cursorStartPosition.asObservable();
 
     constructor(private http: Http) {
-    }
-
-    setKey(key: string) {
-        this.key = key;
     }
 
     setName(name: string) {
@@ -39,59 +38,63 @@ export class StudentService {
     }
 
     setAvatar(avatar: string | number) {
-        this.avatar = Number(avatar);
-        var URL = 'https://scholar-quest.firebaseio.com/AccountsUnverified/' + this.key + '/avatar.json';
-        const body = JSON.stringify(this.avatar);
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        return this.http.put(URL, body, { headers: headers }).subscribe();
     }
 
     getAvatar(): number {
         return this.avatar;
     }
 
-    setCursor(cursor: number) {
-        this.cursor.next(cursor);
-        var URL = 'https://scholar-quest.firebaseio.com/AccountsUnverified/' + this.key + '/cursor.json';
-        const body = JSON.stringify(this.cursor.value);
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        return this.http.put(URL, body, { headers: headers }).subscribe();
-    }
-
     getCursor(): number {
-        return this.cursor.value;
+        return this.cursor;
     }
 
-    setCursorFollower(cursorFollower) {
-        this.cursorFollower.next(cursorFollower);
-        var URL = 'https://scholar-quest.firebaseio.com/AccountsUnverified/' + this.key + '/cursorFollower.json';
-        const body = JSON.stringify(this.cursorFollower.value);
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        return this.http.put(URL, body, { headers: headers }).subscribe();
+    setCursorFollower(index: number, xPos: number, yPos: number) {
+        this.cursorFollowerStartPosition.next([index, xPos, yPos]);
+        this.cursorFollower = index;
+        this.cursorFollowerStartXPos = xPos;
+        this.cursorFollowerStartYPos = yPos;
     }
 
     getCursorFollower(): number {
-        return this.cursorFollower.value;
+        return this.cursorFollower;
     }
 
-    setUserInfo(userInfo: any, key: string) {
-        this.name = userInfo['first'];
-        this.coins = Number(userInfo['coins']);
-        this.avatar = Number(userInfo['avatar']);
-        this.cursor.next(Number(userInfo['cursor']));
-        this.cursorFollower.next(Number(userInfo['cursorFollower']));
-        this.key = key;
+    setCursor(index: number, xPos: number, yPos: number) {
+        this.cursor = index;
+        this.cursorStartPosition.next([index, xPos, yPos]);
+    }
+
+    setUserInfo(): Observable<boolean> {
+        var subject = new Subject<boolean>();
+        this.getUserInfo().subscribe(userInfo => {
+            this.name = userInfo.firstName;
+            this.avatar = userInfo.avatar;
+            this.coins = userInfo.coins;
+            this.cursor = userInfo.cursor;
+            this.cursorFollower = userInfo.cursorFollower;
+            subject.next(true);
+        });
+            return subject.asObservable();
+    }
+
+    getUserInfo(): Observable<any> {
+        var subject = new Subject<any>();
+        var userId = firebase.auth().currentUser.uid;
+        firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
+            subject.next(snapshot.val());
+        });
+        return subject.asObservable();
     }
 
     logout() {
+        firebase.auth().signOut()
+        var signoutValue = 0
         this.name = '';
-        this.coins = 0;
-        this.avatar = 0;
-        this.cursor.next(0);
-        this.cursorFollower.next(0);
-        this.key = '';
+        this.coins = signoutValue;
+        this.avatar = signoutValue;
+        this.cursorStartPosition.next([0, 0, 0]);
+        this.cursor = 0;
+        this.cursorFollowerStartPosition.next([0, 0, 0]);
+        this.cursorFollower = 0;
     }
 }

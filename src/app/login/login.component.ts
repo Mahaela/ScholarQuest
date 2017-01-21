@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
     FormGroup,
     FormControl,
     FormBuilder,
     Validators
 } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
-import { Response } from '@angular/http';
+import { Observable} from 'rxjs/Rx';
 import { Router } from '@angular/router';
 
 import { LoginService } from './login.service';
@@ -20,10 +19,8 @@ import { StudentService } from '../student/student.service';
     styleUrls: ['./login.component.css'],
     providers: [LoginService]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
     loginForm: FormGroup;
-    data: Response;
-    accounts: any[] = [];
     incUsernameOrPwd: boolean = false;
 
     constructor(private formBuilder: FormBuilder, private loginService: LoginService, private router: Router, private studentService: StudentService) {
@@ -33,22 +30,24 @@ export class LoginComponent implements OnInit {
         });
     }
 
-    ngOnInit(){
-        this.loginService.getData().subscribe(
-            data => {
-                this.accounts = data;
-            }
-        );
-    }
-
     onSubmit() {
-        for (let i in this.accounts) {
-            if (this.accounts[i]['email'] == this.loginForm.controls['email'].value
-                && this.accounts[i]['pwd'] == this.loginForm.controls['pwd'].value) {
-                this.studentService.setUserInfo(this.accounts[i], i);
-                this.router.navigate(['/profile']);
-            }
-        }
-        this.incUsernameOrPwd = true;
-   }
+        this.loginService.login(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value).subscribe(msg => {
+            console.log();
+            switch (msg) {
+                case 'loggedIn':
+                    this.studentService.setUserInfo().subscribe(msg => {
+                        this.router.navigate(['profile']);
+                    });
+                    break;
+                case "emailVerify":
+                    console.log("verifyied");
+                    this.loginService.sendEmail();
+                    this.router.navigate(['signup/emailconf'])
+                    break;
+                default:
+                    this.incUsernameOrPwd = true;
+                    break;
+             }
+          }); 
+     }
 }

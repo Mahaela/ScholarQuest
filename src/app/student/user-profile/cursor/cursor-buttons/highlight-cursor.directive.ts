@@ -1,8 +1,8 @@
-import { Directive, ElementRef, Input, OnInit, Renderer, HostListener } from '@angular/core';
+import { Directive, ElementRef, Input, Renderer, HostListener } from '@angular/core';
 import { StudentService } from '../../../student.service';
 
 @Directive({
-  selector: '[sqHighlightCursor]'
+    selector: '[sqHighlightCursor]',
 })
 export class HighlightCursorDirective {
 
@@ -29,8 +29,7 @@ export class HighlightCursorDirective {
         }
     }
     @HostListener('click')
-    onclick() {
-        this.studentService.setCursor(this.index);
+    onclick($event) {
         var prevSelected = document.getElementById('selectedCursor');
         this.renderer.setElementAttribute(prevSelected, 'id', null);
         this.renderer.setElementAttribute(this.elementRef.nativeElement, 'id', 'selectedCursor');

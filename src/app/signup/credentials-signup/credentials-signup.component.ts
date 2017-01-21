@@ -17,15 +17,12 @@ import { SignupService } from '../signup.service';
 
 })
 export class CredentialsSignupComponent {
-    signupForm: FormGroup;
-    accounts: any[];
-    emailTaken = false;
+    private signupForm: FormGroup;
+    private errorMsg = '0';
+      
     constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService) {
                
         //return to the previous screen if there is no value for role
-        if (!this.signupService.getRole()) {
-            this.router.navigate(['/signup/']);
-        }
         this.signupForm = formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
@@ -33,42 +30,15 @@ export class CredentialsSignupComponent {
                 Validators.required,
                 Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
             ]],
-            passwords: formBuilder.group({
-                pwd1: ['', Validators.required],
-                pwd2: ['', Validators.required]
-            }, { validator: this.pwdMatch })
+             passwords: formBuilder.group({
+                 pwd1: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
+                 pwd2: ['', Validators.required]
+             }, { validator: this.pwdMatch }) 
         });
     }
 
-    ngOnInit() {
-        this.signupService.getData().subscribe(
-            data => {
-                const a = [];
-                for (let key in data) {
-                    a.push(data[key]);
-                }
-                this.accounts = a;
-            }
-        );
-    }
-
-
     onSubmit() {
-
-        for (let i in this.accounts) {
-            if (this.accounts[i]['email'] == this.signupForm.controls['email'].value) {
-                this.emailTaken = true;
-                return
-            }
-        }
-        //this.signupService.setFirstName(this.signupForm.controls['firstName'].value);
-        //this.signupService.setLastName(this.signupForm.controls['lastName'].value);
-        //this.signupService.setPwd(this.signupForm.get(['passwords', 'pwd1']).value);
-        //this.signupService.setEmail(this.signupForm.controls['email'].value);
-        //this.signupService.sendUnverifiedData().subscribe();
-        //this.router.navigate(['/signup/emailconf']);
-
-        this.signupService.createUser(this.signupForm.controls['email'].value, this.signupForm.get(['passwords', 'pwd1']).value);
+        this.signupService.createUser(this.signupForm.controls['email'].value, this.signupForm.get(['passwords', 'pwd1']).value).subscribe(msg => this.addUserDatatToDatabase(msg)); 
     }
 
     errorMessage(control: FormControl): boolean {
@@ -80,7 +50,23 @@ export class CredentialsSignupComponent {
         }
     }
 
-    pwdErrorMessage(group: FormGroup): boolean {
+    addUserDatatToDatabase(msg: string) {
+        switch (msg) {
+            case 'userCreated':
+                this.signupService.addUserInfo(this.signupForm.controls['email'].value, this.signupForm.controls['firstName'].value, this.signupForm.controls['lastName'].value).subscribe(x => this.signupService.sendVerificationEmail().subscribe(x => this.router.navigate(['signup/emailconf'])));
+                break;
+            case 'auth/invalid-email':
+                this.errorMsg = '1';
+                break;
+            case 'auth/email-already-in-use':
+                this.errorMsg = '2';
+                break;
+            default:
+                this.errorMsg = 'other';
+        }
+    }
+
+     pwdErrorMessage(group: FormGroup): boolean {
         if (group.controls['pwd1'].touched && group.controls['pwd2'].touched
             && !group.valid) {
             return true;
@@ -88,7 +74,7 @@ export class CredentialsSignupComponent {
         else return false;
     }
 
-    pwdMatch(group: FormGroup): {[key: string]: boolean} {
+    pwdMatch(group: FormGroup): { [key: string]: boolean } {
         if (group.controls['pwd1'].value === group.controls['pwd2'].value) {
             return null;
         }
@@ -96,6 +82,5 @@ export class CredentialsSignupComponent {
             return { example: true };
         }
     }
-
 }
 

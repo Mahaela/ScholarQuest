@@ -49,13 +49,13 @@ export class EyesComponent implements AfterViewInit{
 
         //begining position of the eyes
         this.renderer.setElementStyle(this.leftEye.nativeElement, 'left',
-            window.innerWidth / 2 - this.eyeSize - this.eyeSize / 2 + 'px');
+           this.xPos + 'px');
         this.renderer.setElementStyle(this.leftEye.nativeElement, 'top',
-            window.innerHeight / 2 + this.eyeSize / 2 + 'px');
+            this.yPos + 400 + 'px');
         this.renderer.setElementStyle(this.rightEye.nativeElement, 'left',
-            window.innerWidth / 2 + this.eyeSize / 2 + 'px');
+            this.xPos + 'px');
         this.renderer.setElementStyle(this.rightEye.nativeElement, 'top',
-            window.innerHeight / 2 + this.eyeSize / 2 + 'px');
+            this.yPos + 400 + 'px');
 
         //begining positions of the eyeblls
         this.eyeballCen = this.eyeSize / 2  -  this.eyeballSize + 1;
@@ -69,6 +69,7 @@ export class EyesComponent implements AfterViewInit{
     onDone($event) {
         this.moveEyes();
     }
+
 
     constructor(private renderer: Renderer) { }
 

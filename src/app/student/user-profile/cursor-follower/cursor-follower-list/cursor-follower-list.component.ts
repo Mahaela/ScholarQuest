@@ -25,20 +25,21 @@ export class CursorFollowerListComponent implements AfterContentInit, OnChanges,
 
     constructor(private viewContainerRef: ViewContainerRef, private componentFactoryResolver: ComponentFactoryResolver, private studentService: StudentService, private cursorFollowerService: CursorFollowerService, private elementRef: ElementRef) {
         this.cursorFollowers = cursorFollowerService.getCursorFollowerComponents();
-        this.subscription = this.studentService.cursorFollowerObs.subscribe(index => this.changeFollower(index));
+        this.subscription = this.studentService.cursorFollowerStartPositionObs.subscribe(cf => this.changeFollower(cf));
     }
 
     getCursorFollower(): number {
         return this.studentService.getCursorFollower();
     }
 
-    changeFollower(index: number) {
+    changeFollower(cf: number[]) {
         if (this.cursorFollowerReady){
             this.cursorFollower.clear();
-            if (this.studentService.getCursorFollower() != 0) {
-                let factory = this.componentFactoryResolver.resolveComponentFactory(this.cursorFollowers[index]);
+            if (cf[0] != 0) {
+                let factory = this.componentFactoryResolver.resolveComponentFactory(this.cursorFollowers[cf[0]]);
                 this.componentRef = this.cursorFollower.createComponent(factory);
-                this.cursorFollowerIndex = index;
+                this.cursorFollowerIndex = cf[0];
+                this.moveCursorFollower();
             }
         }
     }
@@ -63,11 +64,14 @@ export class CursorFollowerListComponent implements AfterContentInit, OnChanges,
 
     ngOnChanges() {
         if (this.cursorFollowerIndex != 0) {
-            this.componentRef.instance.yPos = this.yPos;
-            this.componentRef.instance.xPos = this.xPos;
+            this.moveCursorFollower();
         }
     }
 
+    moveCursorFollower() {
+        this.componentRef.instance.yPos = this.yPos;
+        this.componentRef.instance.xPos = this.xPos;
+    }
     ngOnDestroy(){
         this.subscription.unsubscribe();
     }

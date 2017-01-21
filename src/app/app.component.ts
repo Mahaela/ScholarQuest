@@ -12,16 +12,7 @@ export class AppComponent implements AfterViewInit{
     private cursorFollower = '0';
     @ViewChild('canvas') canvas: ElementRef;
     
-    constructor(private studentService: StudentService) {
-        firebase.auth().createUserWithEmailAndPassword('testemail@jc.com', 'testpassword').catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorMessage);
-            console.log(errorCode);
-            // ...
-        });
-    }
+    constructor(private studentService: StudentService) { }
 
     ngAfterViewInit() {
         this.canvas.nativeElement.style.width = window.innerWidth + "px";

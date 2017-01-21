@@ -12,7 +12,7 @@ export class CapacitySignupComponent  {
     constructor(private router: Router, private signupService: SignupService) { }
 
     navigate(role: string) {
-        this.signupService.setRole(role);
+        
         this.router.navigate(['/signup/credentials']);
   }
 

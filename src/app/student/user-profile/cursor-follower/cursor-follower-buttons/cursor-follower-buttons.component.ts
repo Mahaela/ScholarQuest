@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-//import { StudentService } from '../../../student.service';
+import { StudentService } from '../../../student.service';
 import { CursorFollowerService } from '../cursor-follower.service';
 
 @Component({
@@ -10,8 +10,12 @@ import { CursorFollowerService } from '../cursor-follower.service';
 export class CursorFollowerButtonsComponent {
     private buttonImgs: string[];
 
-    constructor(private cursorFollowerService: CursorFollowerService) {
+    constructor(private cursorFollowerService: CursorFollowerService, private studentService: StudentService) {
         this.buttonImgs = this.cursorFollowerService.getCursorFollowerImages();
+    }
+
+    changeCursorFollower(index: number) {
+        this.studentService.setCursorFollower(index, event.clientX, event.clientY);
     }
 
 }
