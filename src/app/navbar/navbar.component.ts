@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { StudentService } from '../student/student.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'sq-navbar',
@@ -9,16 +10,18 @@ import { StudentService } from '../student/student.service';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-  constructor(private studentService: StudentService, private router: Router) { }
+    private _loggedIn = false
+    constructor(private studentService: StudentService, private router: Router, private authService: AuthService) {
+        this.authService.isAuthenticated().subscribe( loggedin => {
+            this._loggedIn = loggedin;
+        });
+    }
 
-  loggedIn(): boolean {
-      if (this.studentService.getName() == '') {
-          return false;
-      }
-      return true;
-  }
+    getLoggedIn(): boolean {
+        return this._loggedIn;
+    }
 
-  logout() {
+    logout() {
       this.studentService.logout();
       this.router.navigate(['']);
   }

@@ -28,6 +28,7 @@ import { CursorDisplayComponent } from './student/user-profile/cursor/cursor-dis
 import { CursorService } from './student/user-profile/cursor/cursor.service';
 import { HighlightCursorDirective } from './student/user-profile/cursor/cursor-buttons/highlight-cursor.directive';
 import { CursorComponent } from './student/user-profile/cursor/cursor.component';
+import { AuthService } from './auth.service';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,7 @@ import { CursorComponent } from './student/user-profile/cursor/cursor.component'
       ReactiveFormsModule,
     routing
   ],
-  providers: [SignupService, StudentService, CursorFollowerService, CursorService],
+  providers: [SignupService, StudentService, CursorFollowerService, CursorService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

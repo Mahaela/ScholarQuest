@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from "@angular/http";
-import { Observable, Subject} from "rxjs/Rx";
+import { Http, Response, Headers } from '@angular/http';
+import { Observable, Subject} from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 declare var firebase;
 
@@ -38,6 +38,7 @@ export class StudentService {
     }
 
     setAvatar(avatar: string | number) {
+        //firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/avatar' ).set(avatar);
     }
 
     getAvatar(): number {
@@ -67,6 +68,7 @@ export class StudentService {
     setUserInfo(): Observable<boolean> {
         var subject = new Subject<boolean>();
         this.getUserInfo().subscribe(userInfo => {
+            console.log(userInfo);
             this.name = userInfo.firstName;
             this.avatar = userInfo.avatar;
             this.coins = userInfo.coins;
@@ -80,6 +82,7 @@ export class StudentService {
     getUserInfo(): Observable<any> {
         var subject = new Subject<any>();
         var userId = firebase.auth().currentUser.uid;
+        console.log(firebase.auth().currentUser);
         firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
             subject.next(snapshot.val());
         });
