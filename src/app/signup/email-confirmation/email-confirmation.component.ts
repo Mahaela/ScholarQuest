@@ -1,8 +1,5 @@
 import { Component} from '@angular/core';
-import { Router } from '@angular/router';
-import { Http, Headers, RequestOptions } from "@angular/http";
 
-import { AuthService } from '../../auth.service'
 import { SignupService } from '../signup.service';
 
 declare var firebase;
@@ -21,18 +18,7 @@ declare var firebase;
 })
 export class EmailConfirmationComponent {
 
-    constructor(private signupService: SignupService, private router: Router, private authService: AuthService) {
-        this.authService.isAuthenticated().subscribe(loggedIn => {
-            if (!loggedIn) {
-                this.router.navigate(['/signup/credentials']);
-            }
-            else {
-                var user = firebase.auth().currentUser;
-                if (user.emailVerified) {
-                    this.router.navigate(['/profile']);
-                }
-            });
-        }
+    constructor(private signupService: SignupService) { }
 
     resend() {
         this.signupService.sendVerificationEmail();

@@ -22,7 +22,6 @@ export class CredentialsSignupComponent {
       
     constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService) {
                
-        //return to the previous screen if there is no value for role
         this.signupForm = formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],

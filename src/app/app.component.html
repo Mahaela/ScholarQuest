@@ -1,6 +1,10 @@
 <div id="canvas" #canvas>
-    <sq-navbar></sq-navbar>
-    <router-outlet></router-outlet> 
-    <sq-cursor-follower-list [xPos]="xPos" [yPos]="yPos"></sq-cursor-follower-list>
-    <sq-cursor-display [xPos]="xPos" [yPos]="yPos"></sq-cursor-display>
+    <div *ngIf="loaded">
+        <sq-navbar></sq-navbar>
+    </div>
+    <router-outlet></router-outlet>
+    <div *ngIf="loaded"> 
+        <sq-cursor-follower-list [xPos]="xPos" [yPos]="yPos"></sq-cursor-follower-list>
+        <sq-cursor-display [xPos]="xPos" [yPos]="yPos"></sq-cursor-display>
+    </div>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
 import { Observable, Subject} from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
 declare var firebase;
 
 @Injectable()
@@ -15,10 +15,11 @@ export class StudentService {
     private cursorFollowerStartYPos = 0;
     private cursorFollowerStartPosition = new Subject<number[]>();
     public cursorFollowerStartPositionObs = this.cursorFollowerStartPosition.asObservable();
-    public cursorStartPosition = new Subject<number[]>();
+    private cursorStartPosition = new Subject<number[]>();
     public cursorStartPositionObs = this.cursorStartPosition.asObservable();
+    private loaded = false;
 
-    constructor(private http: Http) {
+    constructor() {
     }
 
     setName(name: string) {
@@ -29,16 +30,18 @@ export class StudentService {
         return this.name;
     }
 
-    setCoins(coins: string) {
-        this.coins = Number(coins);
+    setCoins(coins: number) {
+        this.coins += coins;
+        firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/coins').set(this.coins);
     }
 
     getCoins(): number {
         return this.coins;
     }
 
-    setAvatar(avatar: string | number) {
-        //firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/avatar' ).set(avatar);
+    setAvatar(avatar: number) {
+        this.avatar = avatar;
+        firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/avatar' ).set(avatar);
     }
 
     getAvatar(): number {
@@ -54,6 +57,8 @@ export class StudentService {
         this.cursorFollower = index;
         this.cursorFollowerStartXPos = xPos;
         this.cursorFollowerStartYPos = yPos;
+
+        firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/cursorFollower').set(index);
     }
 
     getCursorFollower(): number {
@@ -63,17 +68,18 @@ export class StudentService {
     setCursor(index: number, xPos: number, yPos: number) {
         this.cursor = index;
         this.cursorStartPosition.next([index, xPos, yPos]);
+        firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/cursor').set(index);
     }
 
     setUserInfo(): Observable<boolean> {
         var subject = new Subject<boolean>();
         this.getUserInfo().subscribe(userInfo => {
-            console.log(userInfo);
             this.name = userInfo.firstName;
-            this.avatar = userInfo.avatar;
-            this.coins = userInfo.coins;
-            this.cursor = userInfo.cursor;
-            this.cursorFollower = userInfo.cursorFollower;
+            this.avatar = Number(userInfo.avatar);
+            this.coins = Number(userInfo.coins);
+            this.cursor = Number(userInfo.cursor);
+            this.cursorFollower = Number(userInfo.cursorFollower);
+            this.loaded = true;
             subject.next(true);
         });
             return subject.asObservable();
@@ -82,19 +88,21 @@ export class StudentService {
     getUserInfo(): Observable<any> {
         var subject = new Subject<any>();
         var userId = firebase.auth().currentUser.uid;
-        console.log(firebase.auth().currentUser);
         firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
             subject.next(snapshot.val());
         });
         return subject.asObservable();
     }
 
+    getLoaded():boolean {
+        return this.loaded;
+    }
+
     logout() {
         firebase.auth().signOut()
-        var signoutValue = 0
         this.name = '';
-        this.coins = signoutValue;
-        this.avatar = signoutValue;
+        this.coins = 0;
+        this.avatar = 0;
         this.cursorStartPosition.next([0, 0, 0]);
         this.cursor = 0;
         this.cursorFollowerStartPosition.next([0, 0, 0]);

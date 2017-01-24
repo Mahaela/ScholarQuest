@@ -29,6 +29,11 @@ import { CursorService } from './student/user-profile/cursor/cursor.service';
 import { HighlightCursorDirective } from './student/user-profile/cursor/cursor-buttons/highlight-cursor.directive';
 import { CursorComponent } from './student/user-profile/cursor/cursor.component';
 import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guard';
+import { EmailGuard } from './email.guard';
+import { MathBingoComponent } from './student/games/math-bingo/math-bingo.component';
+import { HighlightMathBingoDirective } from './student/games/math-bingo/highlight-math-bingo.directive';
+import { GamesListComponent } from './student/games/games-list/games-list.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +56,9 @@ import { AuthService } from './auth.service';
       CursorDisplayComponent,
       HighlightCursorDirective,
       CursorComponent,
+      MathBingoComponent,
+      HighlightMathBingoDirective,
+      GamesListComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,7 +67,7 @@ import { AuthService } from './auth.service';
       ReactiveFormsModule,
     routing
   ],
-  providers: [SignupService, StudentService, CursorFollowerService, CursorService, AuthService],
+  providers: [SignupService, StudentService, CursorFollowerService, CursorService, AuthService, AuthGuard, EmailGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

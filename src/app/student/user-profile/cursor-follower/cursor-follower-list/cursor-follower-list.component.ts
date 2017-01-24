@@ -26,14 +26,11 @@ export class CursorFollowerListComponent implements AfterContentInit, OnChanges,
     constructor(private viewContainerRef: ViewContainerRef, private componentFactoryResolver: ComponentFactoryResolver, private studentService: StudentService, private cursorFollowerService: CursorFollowerService, private elementRef: ElementRef) {
         this.cursorFollowers = cursorFollowerService.getCursorFollowerComponents();
         this.subscription = this.studentService.cursorFollowerStartPositionObs.subscribe(cf => this.changeFollower(cf));
-    }
-
-    getCursorFollower(): number {
-        return this.studentService.getCursorFollower();
+        this.cursorFollowerIndex = this.studentService.getCursorFollower();
     }
 
     changeFollower(cf: number[]) {
-        if (this.cursorFollowerReady){
+        if (this.cursorFollowerReady) {
             this.cursorFollower.clear();
             if (cf[0] != 0) {
                 let factory = this.componentFactoryResolver.resolveComponentFactory(this.cursorFollowers[cf[0]]);
@@ -46,24 +43,15 @@ export class CursorFollowerListComponent implements AfterContentInit, OnChanges,
 
     ngAfterContentInit() {
         this.cursorFollowerReady = true;
-        for (var i = 0; i < this.cursorFollowers.length; i++) {
-            if (i == this.studentService.getCursorFollower()) {
-                if (this.cursorFollowerIndex != this.studentService.getCursorFollower()) {
-                    if (this.studentService.getCursorFollower() == 0) {
-                        this.cursorFollowerIndex = 0;
-                    }
-                    else {
-                        let factory = this.componentFactoryResolver.resolveComponentFactory(this.cursorFollowers[i]);
-                        this.componentRef = this.cursorFollower.createComponent(factory);
-                        this.cursorFollowerIndex = i;
-                    }
-                }
-            }
+        if (this.cursorFollowerIndex != 0) {
+            let factory = this.componentFactoryResolver.resolveComponentFactory(this.cursorFollowers[this.cursorFollowerIndex]);
+            this.componentRef = this.cursorFollower.createComponent(factory);
+            this.moveCursorFollower();
         }
     }
-
+            
     ngOnChanges() {
-        if (this.cursorFollowerIndex != 0) {
+        if (this.cursorFollowerIndex != 0 && this.cursorFollowerReady) {
             this.moveCursorFollower();
         }
     }

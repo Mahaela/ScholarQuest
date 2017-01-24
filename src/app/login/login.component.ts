@@ -32,7 +32,6 @@ export class LoginComponent {
 
     onSubmit() {
         this.loginService.login(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value).subscribe(msg => {
-            console.log();
             switch (msg) {
                 case 'loggedIn':
                     this.studentService.setUserInfo().subscribe(msg => {
@@ -40,7 +39,6 @@ export class LoginComponent {
                     });
                     break;
                 case "emailVerify":
-                    console.log("verifyied");
                     this.loginService.sendEmail();
                     this.router.navigate(['signup/emailconf'])
                     break;

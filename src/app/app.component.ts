@@ -1,5 +1,7 @@
 import { Component, HostListener, EventEmitter, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+
 import { StudentService } from './student/student.service';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'sq-root',
@@ -11,8 +13,13 @@ export class AppComponent implements AfterViewInit{
     private yPos = 0;
     private cursorFollower = '0';
     @ViewChild('canvas') canvas: ElementRef;
+    private loaded = false;
     
-    constructor(private studentService: StudentService) { }
+    constructor(private studentService: StudentService, private authService: AuthService) {
+        this.authService.isAuthenticated().subscribe(x => {
+            this.loaded = true;
+        });
+    }
 
     ngAfterViewInit() {
         this.canvas.nativeElement.style.width = window.innerWidth + "px";

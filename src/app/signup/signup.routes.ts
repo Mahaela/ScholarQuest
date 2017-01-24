@@ -5,7 +5,7 @@ import { CredentialsSignupComponent } from './credentials-signup/credentials-sig
 import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
 
 export const SIGNUP_ROUTES: Routes = [
-    { path: '', component: CapacitySignupComponent },
+    //{ path: '', component: CapacitySignupComponent },
     { path: 'credentials', component: CredentialsSignupComponent },
-    { path: 'emailconf', component: EmailConfirmationComponent }
+    { path: 'emailconf', component: EmailConfirmationComponent}
 ]
