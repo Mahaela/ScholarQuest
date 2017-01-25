@@ -6,7 +6,12 @@
     <ul class="nav navbar-nav">
       <li><a [routerLink]="['/profile']">Home</a></li>
       <li><a [routerLink]="['/games/list']" >Games</a></li>
-    </ul>
+      <li id="coinWrapper" *ngIf="getLoggedIn()"><a> <img src="../../assets/clip-art/GoldCoin.png" class="coin">{{goldCoins}} 
+           <img src="../../assets/clip-art/SilverCoin.png" class="coin"/>{{silverCoins}}
+           <img src="../../assets/clip-art/BronzeCoin.png" class="coin"/>{{bronzeCoins}}
+      </a> </li>
+     </ul>
+             
       <ul class="nav navbar-nav navbar-right">
           <li *ngIf="!getLoggedIn()"><a [routerLink]="['/signup/credentials']" ><span class="glyphicon glyphicon-user"></span>Sign Up</a></li>
           <li *ngIf="!getLoggedIn()"><a [routerLink]="['/login']" ><span class="glyphicon glyphicon-log-in"></span> Login</a></li>

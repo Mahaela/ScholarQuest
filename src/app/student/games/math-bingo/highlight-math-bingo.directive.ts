@@ -23,10 +23,4 @@ export class HighlightMathBingoDirective {
         }
     }
 
-    @HostListener('click')
-    onClick(event: MouseEvent) {
-        if (this.elementRef.nativeElement.classList.contains('picked') && !this.gameFinished) {
-            this.renderer.setElementAttribute(this.elementRef.nativeElement, 'id', null);
-        }
-    }
 }

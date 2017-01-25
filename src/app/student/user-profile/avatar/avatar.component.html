@@ -1,7 +1,6 @@
-  <div id="avatarWrapper" (mouseenter)="arrows()" (mouseleave)="arrows()"  >
-         <img [src]="firstAvatarImg" id="firstAvatarImg" [@visibility]="firstAvatarState" #firstdAvatar/>
-         <img [src]="secondAvatarImg" id="secondAvatarImg" [@visibility]="secondAvatarState" #secondAvatar/>
-            
-            <img src="../../../../assets/clip-art/ArrowRight.png" id="avatarRArrow" (click)="avatarScrollUp(firstAvatar, secondAvatar)" [@visibility]="arrowState" />
-            <img src="../../../../assets/clip-art/ArrowLeft.png" id="avatarLArrow" (click)="avatarScrollDown(firstAvatar, secondAvatar)" [@visibility]="arrowState"/>
-        </div>
+<div id="avatarWrapper" (mouseenter)="arrows()" (mouseleave)="arrows()"  >
+    <img [src]="firstAvatarImg" id="firstAvatarImg" [@visibility]="firstAvatarState" #firstdAvatar/>
+    <img [src]="secondAvatarImg" id="secondAvatarImg" [@visibility]="secondAvatarState" #secondAvatar/>
+    <img src="../../../../assets/clip-art/ArrowRight.png" id="avatarRArrow" (click)="avatarScrollUp(firstAvatar, secondAvatar)" [@visibility]="arrowState" />
+    <img src="../../../../assets/clip-art/ArrowLeft.png" id="avatarLArrow" (click)="avatarScrollDown(firstAvatar, secondAvatar)" [@visibility]="arrowState"/>
+</div>

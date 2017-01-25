@@ -21,12 +21,6 @@ export class CursorDisplayComponent implements OnChanges, OnDestroy, AfterViewIn
         this.cursors = cursorService.getCursors();
         this.cursorIndex = this.studentService.getCursor()
         this.displayedCursor = this.cursors[this.cursorIndex];
-        this.cursorSubscription = this.studentService.cursorStartPositionObs.subscribe(pos => {
-            this.changeCursor(pos[0]);
-            this.xPos = pos[1];
-            this.yPos = pos[2];
-            this.moveCursor();
-        });
     }
 
     ngOnChanges() {
@@ -57,6 +51,12 @@ export class CursorDisplayComponent implements OnChanges, OnDestroy, AfterViewIn
     }
 
     ngAfterViewInit() {
+        this.cursorSubscription = this.studentService.cursorStartPositionObs.subscribe(pos => {
+            this.changeCursor(pos[0]);
+            this.xPos = pos[1];
+            this.yPos = pos[2];
+            this.moveCursor();
+        });
         if (this.cursorIndex == 0) {
             this.renderer.setElementStyle(this.cursor.nativeElement, 'opacity', '0');
         }

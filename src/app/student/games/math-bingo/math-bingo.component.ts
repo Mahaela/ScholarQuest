@@ -148,7 +148,9 @@ export class MathBingoComponent implements AfterViewInit {
 
     checkCorrect(pos) {
         pos = Number(pos);
+
         if (this.squares[pos][0].nativeElement.textContent == this.solution) {
+            this.renderer.setElementAttribute(this.squares[pos][0].nativeElement, 'id', null);
             clearInterval(this.clock);
             this.setScore(this.timeLeft);
             this.cNums.splice(this.cNumsIndex, 1);
@@ -269,12 +271,20 @@ export class MathBingoComponent implements AfterViewInit {
 
     reload() {
         this.initcNums();
+        this.cNums = [];
+        this.initcNums();
         this.initClock();
         this.score = 0;
         this.setScore(0);
         this.initGameboard();
         this.setFormula();
         clearInterval(this.clock);
+        this.cNums = [];
+        this.initcNums();
+
+        for (var i = 0; i < this.squares.length; i++) {
+            this.renderer.setElementAttribute(this.squares[i][0].nativeElement, 'class', null);
+        }
     }
 }
 

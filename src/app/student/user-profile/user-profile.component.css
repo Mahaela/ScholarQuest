@@ -1,5 +1,3 @@
-.centered{
-    margin: auto;
-    background: blue;
-    text-align: center;
+.block{
+    display: inline-block;
 }

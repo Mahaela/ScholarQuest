@@ -14,7 +14,7 @@ export class SignupService {
         var subject = new Subject<string>()
         var uid = firebase.auth().currentUser.uid
         var user = { 'email': email, 'firstName': firstName, 'lastName': lastName, 'avatar': '0', 'cursor': '0', 'cursorFollower': '0', 'coins': '0' }
-        var g = firebase.database().ref('users/' + uid).set(user).then(x => subject.next(x));
+        var g = firebase.database().ref('users/student' + uid).set(user).then(x => subject.next(x));
         return subject.asObservable();
     }
     createUser(email: string, password: string): Observable<string> {

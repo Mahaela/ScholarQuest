@@ -26,16 +26,21 @@ export class AppComponent implements AfterViewInit{
         this.canvas.nativeElement.style.height = window.innerHeight + "px";
     }
 
-    @HostListener('mousemove', ['$event'])
-    onMousemove(event: MouseEvent) {
-        this.xPos = event.clientX;
-        this.yPos = event.clientY;
-    }
+    //@HostListener('mousemove', ['$event'])
+    //onMousemove(event: MouseEvent) {
+    //    this.xPos = event.clientX;
+    //    this.yPos = event.clientY;
+    //}
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
          this.canvas.nativeElement.style.width = window.innerWidth + "px";
-         this.canvas.nativeElement.style.height = window.innerHeight +"px";
+         this.canvas.nativeElement.style.height = window.innerHeight + "px";
+        
+    }
+
+    mouseMove() {
+
     }
     
 }

@@ -7,15 +7,14 @@ declare var firebase;
 @Injectable()
 export class StudentService {
     private name = '';
-    private coins = 0;
     private avatar = 0;
-    private cursor = 0;
-    private cursorFollower = 0;
+    private coins = new BehaviorSubject<number>(0);
+    public coinsObs = this.coins.asObservable();
     private cursorFollowerStartXPos = 0;
     private cursorFollowerStartYPos = 0;
-    private cursorFollowerStartPosition = new Subject<number[]>();
+    private cursorFollowerStartPosition = new BehaviorSubject<number[]>([0, 0, 0]);
     public cursorFollowerStartPositionObs = this.cursorFollowerStartPosition.asObservable();
-    private cursorStartPosition = new Subject<number[]>();
+    private cursorStartPosition = new BehaviorSubject<number[]>([0, 0, 0]);
     public cursorStartPositionObs = this.cursorStartPosition.asObservable();
     private loaded = false;
 
@@ -31,17 +30,14 @@ export class StudentService {
     }
 
     setCoins(coins: number) {
-        this.coins += coins;
-        firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/coins').set(this.coins);
+        this.coins.next(this.coins.value + coins)
+        firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/coins').set(this.coins.value);
     }
 
-    getCoins(): number {
-        return this.coins;
-    }
 
     setAvatar(avatar: number) {
         this.avatar = avatar;
-        firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/avatar' ).set(avatar);
+        firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/avatar' ).set(avatar);
     }
 
     getAvatar(): number {
@@ -49,26 +45,24 @@ export class StudentService {
     }
 
     getCursor(): number {
-        return this.cursor;
+        return this.cursorStartPosition.value[0];
     }
 
     setCursorFollower(index: number, xPos: number, yPos: number) {
         this.cursorFollowerStartPosition.next([index, xPos, yPos]);
-        this.cursorFollower = index;
         this.cursorFollowerStartXPos = xPos;
         this.cursorFollowerStartYPos = yPos;
 
-        firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/cursorFollower').set(index);
+        firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/cursorFollower').set(index);
     }
 
     getCursorFollower(): number {
-        return this.cursorFollower;
+        return this.cursorFollowerStartPosition.value[0];
     }
 
     setCursor(index: number, xPos: number, yPos: number) {
-        this.cursor = index;
         this.cursorStartPosition.next([index, xPos, yPos]);
-        firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/cursor').set(index);
+        firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/cursor').set(index);
     }
 
     setUserInfo(): Observable<boolean> {
@@ -76,9 +70,9 @@ export class StudentService {
         this.getUserInfo().subscribe(userInfo => {
             this.name = userInfo.firstName;
             this.avatar = Number(userInfo.avatar);
-            this.coins = Number(userInfo.coins);
-            this.cursor = Number(userInfo.cursor);
-            this.cursorFollower = Number(userInfo.cursorFollower);
+            this.coins.next(Number(userInfo.coins));
+            this.cursorStartPosition.next([Number(userInfo.cursor), 0, 0]);
+            this.cursorFollowerStartPosition.next([Number(userInfo.cursorFollower), 0, 0]);
             this.loaded = true;
             subject.next(true);
         });
@@ -88,7 +82,7 @@ export class StudentService {
     getUserInfo(): Observable<any> {
         var subject = new Subject<any>();
         var userId = firebase.auth().currentUser.uid;
-        firebase.database().ref('/users/' + userId).once('value').then(function (snapshot) {
+        firebase.database().ref('/users/student' + userId).once('value').then(function (snapshot) {
             subject.next(snapshot.val());
         });
         return subject.asObservable();
@@ -101,11 +95,9 @@ export class StudentService {
     logout() {
         firebase.auth().signOut()
         this.name = '';
-        this.coins = 0;
+        this.coins.next(0);
         this.avatar = 0;
         this.cursorStartPosition.next([0, 0, 0]);
-        this.cursor = 0;
         this.cursorFollowerStartPosition.next([0, 0, 0]);
-        this.cursorFollower = 0;
     }
 }
