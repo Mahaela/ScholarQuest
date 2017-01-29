@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { StudentService } from '../student/student.service';
-import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'sq-navbar',
@@ -13,11 +12,9 @@ export class NavbarComponent {
     private bronzeCoins = "00";
     private silverCoins = "00";
     private goldCoins = "00";
-    private _loggedIn = false
-    constructor(private studentService: StudentService, private router: Router, private authService: AuthService, ) {
-        this.authService.isAuthenticated().subscribe( loggedin => {
-            this._loggedIn = loggedin;
-        });
+    @Input('loggedIn') _loggedIn = false
+    constructor(private studentService: StudentService, private router: Router) {
+
         this.studentService.coinsObs.subscribe(coins => {
             let goldCoinNum = Math.trunc(coins / 10000);
             if (goldCoinNum < 10) {

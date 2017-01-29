@@ -1,10 +1,11 @@
-<div id="canvas" #canvas>
-    <div *ngIf="loaded">
-        <sq-navbar></sq-navbar>
-    </div>
-    <router-outlet></router-outlet>
-    <div *ngIf="loaded"> 
-        <sq-cursor-follower-list [xPos]="xPos" [yPos]="yPos"></sq-cursor-follower-list>
-        <sq-cursor-display [xPos]="xPos" [yPos]="yPos"></sq-cursor-display>
-    </div>
+<div *ngIf="loaded | async"> 
+    <sq-navbar [loggedIn]="loggedIn"></sq-navbar>
 </div>
+    <router-outlet></router-outlet>
+<div *ngIf="loaded | async"> 
+    <sq-cursor-follower-list [xPos]="xPos" [yPos]="yPos"></sq-cursor-follower-list>
+    <sq-cursor-display [xPos]="xPos" [yPos]="yPos"></sq-cursor-display>
+</div>
+ <div (window:mousemove)="mouseMove()"></div>
+
+    
