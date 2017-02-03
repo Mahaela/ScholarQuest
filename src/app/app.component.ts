@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { StudentService } from './student/student.service';
 import { AuthService } from './auth.service';
 
+
 @Component({
     selector: 'sq-root',
     templateUrl: './app.component.html',

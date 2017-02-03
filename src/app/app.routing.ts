@@ -7,8 +7,6 @@ import { LoginComponent } from './login/login.component';
 import { CapacitySignupComponent } from './signup/capacity-signup/capacity-signup.component';
 import { SIGNUP_ROUTES } from './signup/signup.routes';
 import { SignupComponent } from './signup/signup.component';
-import { AuthGuard } from './auth.guard';
-import { EmailGuard } from './email.guard';
 import { GAMES_ROUTES } from './student/games/games.routes';
 
 const APP_ROUTES: Routes = [    
@@ -17,7 +15,7 @@ const APP_ROUTES: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'games', component: GamesComponent },
     { path: 'games', component: GamesComponent, children: GAMES_ROUTES },
-    { path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard, EmailGuard] },
+    { path: 'profile', component: UserProfileComponent },
     { path: '', component: HomeComponent }
 ];
 

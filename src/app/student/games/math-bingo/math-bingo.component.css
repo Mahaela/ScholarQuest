@@ -82,3 +82,12 @@ p{
 #equation{
     text-align: center;
 }
+
+#backdrop{
+    margin-top: 100px;
+    margin-left: 150px;
+    margin-right: 150px;
+    background-color: cornsilk;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}

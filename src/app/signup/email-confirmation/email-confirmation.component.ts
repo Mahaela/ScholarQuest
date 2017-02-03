@@ -2,12 +2,10 @@ import { Component} from '@angular/core';
 
 import { SignupService } from '../signup.service';
 
-declare var firebase;
-
 @Component({
   selector: 'sq-email-confirmation',
   template: `
-    <div>
+    <div id="backdrop">
         <p>
          We have sent an email to your email address. Please follow the instructions to verify your account.
         </p>

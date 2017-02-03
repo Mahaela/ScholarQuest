@@ -34,6 +34,11 @@ import { EmailGuard } from './email.guard';
 import { MathBingoComponent } from './student/games/math-bingo/math-bingo.component';
 import { HighlightMathBingoDirective } from './student/games/math-bingo/highlight-math-bingo.directive';
 import { GamesListComponent } from './student/games/games-list/games-list.component';
+import { VocabMatchComponent } from './student/games/vocab-match/vocab-match.component';
+import { DragulaModule } from 'ng2-dragula';
+import { NgPipesModule } from 'ngx-pipes';
+import { CorrectStylingDirective } from './student/games/vocab-match/correct-styling.directive';
+import { VocabMatchReloadComponent } from './student/games/vocab-match/vocab-match-reload.component';
 
 @NgModule({
   declarations: [
@@ -59,12 +64,17 @@ import { GamesListComponent } from './student/games/games-list/games-list.compon
       MathBingoComponent,
       HighlightMathBingoDirective,
       GamesListComponent,
+      VocabMatchComponent,
+      CorrectStylingDirective,
+      VocabMatchReloadComponent
   ],
   imports: [
+    NgPipesModule,
+    DragulaModule,
     BrowserModule,
     FormsModule,
     HttpModule,
-      ReactiveFormsModule,
+    ReactiveFormsModule,
     routing
   ],
   providers: [SignupService, StudentService, CursorFollowerService, CursorService, AuthService, AuthGuard, EmailGuard],
