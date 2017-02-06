@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from "rxjs/Rx";
-import { StudentService } from "../student/student.service"
-declare var firebase;
 
+import { StudentService } from "../student/student.service"
+
+declare var firebase;
 
 @Injectable()
 export class LoginService {

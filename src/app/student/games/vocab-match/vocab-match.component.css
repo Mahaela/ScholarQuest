@@ -4,30 +4,6 @@
     padding-left: 50px;
 }
 
-#wrapper{
-    width: 1200px;
-    margin:auto;
-}
-
-#words{
-    display: inline-block;
-    width: 600px;
-    background-color:blueviolet;
-    border: solid blue;
-    padding-top: 10px;
-}
-
-#definitions{
-    display: inline-block;
-    width: 450px;
-    background-color:deepskyblue;
-    border: solid blue;
-    float: right;
-    min-height: 100px;
-    padding-top: 10px;
-
-}
-
 .word{
     vertical-align:top;
     display: inline-block;
@@ -66,26 +42,7 @@
     margin-top: 10px;
 }
 
-#submitButton{
-    margin: auto;
-    display: inline-block;
-    margin-top: 15px;
-}
-
-#replayButton{
-    margin: auto;
-    display: inline-block;
-    margin-top: 5px;
-}
-
 .bWrapper{
-    text-align: center;
-}
-
-#score{
-    margin:auto;
-    display: block;
-    margin-top: 15px;
     text-align: center;
 }
 
@@ -119,5 +76,48 @@
     width: 100px;
     background-color:blanchedalmond;
     line-height: 70px;
+    text-align: center;
+}
+
+#wrapper{
+    width: 1200px;
+    margin:auto;
+}
+
+#words{
+    display: inline-block;
+    width: 600px;
+    background-color:blueviolet;
+    border: solid blue;
+    padding-top: 10px;
+}
+
+#definitions{
+    display: inline-block;
+    width: 450px;
+    background-color:deepskyblue;
+    border: solid blue;
+    float: right;
+    min-height: 100px;
+    padding-top: 10px;
+
+}
+
+#submitButton{
+    margin: auto;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+#replayButton{
+    margin: auto;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+#score{
+    margin:auto;
+    display: block;
+    margin-top: 15px;
     text-align: center;
 }

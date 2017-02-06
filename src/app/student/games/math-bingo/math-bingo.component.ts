@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, Renderer } from '@angular/core';
+
 import { MathBingoEquationsSecondService } from './equations/math-bingo-equations-second.service';
 import { Equation } from './equations/equation';
 import { StudentService } from '../../student.service';

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from "@angular/http";
 import 'rxjs/Rx';
 import { Observable, Subject } from "rxjs/Rx";
+
 declare var firebase;
 
 @Injectable()

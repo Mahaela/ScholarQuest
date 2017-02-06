@@ -11,8 +11,6 @@ import { Router } from '@angular/router';
 import { LoginService } from './login.service';
 import { StudentService } from '../student/student.service';
 
-
-
 @Component({
     selector: 'sq-login',
     templateUrl: './login.component.html',
@@ -20,8 +18,8 @@ import { StudentService } from '../student/student.service';
     providers: [LoginService]
 })
 export class LoginComponent {
-    loginForm: FormGroup;
-    incUsernameOrPwd: boolean = false;
+    private loginForm: FormGroup;
+    private incUsernameOrPwd = false;
 
     constructor(private formBuilder: FormBuilder, private loginService: LoginService, private router: Router, private studentService: StudentService) {
         this.loginForm = formBuilder.group({
