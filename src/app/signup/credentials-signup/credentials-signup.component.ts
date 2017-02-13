@@ -8,8 +8,6 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
-
-import { AuthService } from '../../auth.service';
 import { SignupService } from '../signup.service';
 
 @Component({
@@ -22,7 +20,7 @@ export class CredentialsSignupComponent {
     private signupForm: FormGroup;
     private errorMsg = '0';
       
-    constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService, private authService: AuthService) {
+    constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService) {
                
         this.signupForm = formBuilder.group({
             firstName: ['', Validators.required],
@@ -54,14 +52,7 @@ export class CredentialsSignupComponent {
     addUserDatatToDatabase(msg: string) {
         switch (msg) {
             case 'userCreated':
-                this.signupService.addUserInfo(this.signupForm.controls['email'].value, this.signupForm.controls['firstName'].value,
-                    this.signupForm.controls['lastName'].value).subscribe(
-                    () => this.signupService.sendVerificationEmail().subscribe(
-                        () => {
-                            this.authService.signedUp();
-                            this.router.navigate(['signup/emailconf']);
-                            
-                        }));
+                this.signupService.addUserInfo(this.signupForm.controls['email'].value, this.signupForm.controls['firstName'].value, this.signupForm.controls['lastName'].value).subscribe(x => this.signupService.sendVerificationEmail().subscribe(x => this.router.navigate(['signup/emailconf'])));
                 break;
             case 'auth/invalid-email':
                 this.errorMsg = '1';

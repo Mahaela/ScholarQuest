@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, AfterContentInit, HostListener, ElementRef, Input, OnChanges,  OnDestroy} from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-
 import { EyesComponent } from '../eyes/eyes.component';
 import { StudentService } from '../../../student.service';
 import { CursorFollowerService } from '../cursor-follower.service';

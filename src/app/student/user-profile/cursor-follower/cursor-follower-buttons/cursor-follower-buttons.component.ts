@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { StudentService } from '../../../student.service';
 import { CursorFollowerService } from '../cursor-follower.service';
 

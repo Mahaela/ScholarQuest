@@ -1,5 +1,4 @@
 import { Component, Injectable } from '@angular/core';
-
 import { CursorFollower } from './cursor-follower';
 import { EyesComponent } from './eyes/eyes.component';
 
@@ -32,4 +31,5 @@ export class CursorFollowerService {
         }
         return cursorFollowerComponents;
     }
+
 }

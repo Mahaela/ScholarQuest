@@ -1,8 +1,7 @@
 import { Component, ViewChild, Input, Renderer, OnChanges, OnDestroy, AfterViewInit } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-
 import { StudentService } from '../../../student.service';
 import { CursorService } from '../cursor.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'sq-cursor-display',

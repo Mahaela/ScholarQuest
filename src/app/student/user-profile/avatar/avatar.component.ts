@@ -1,5 +1,4 @@
 import { Component, trigger, style, state, transition, animate } from '@angular/core';
-
 import { StudentService } from '../../student.service';
 
 @Component({

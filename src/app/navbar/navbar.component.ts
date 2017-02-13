@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthService } from '../auth.service';
 import { StudentService } from '../student/student.service';
 
 @Component({
@@ -14,7 +13,7 @@ export class NavbarComponent {
     private silverCoins = "00";
     private goldCoins = "00";
     @Input('loggedIn') _loggedIn = false
-    constructor(private studentService: StudentService, private router: Router, private authService: AuthService) {
+    constructor(private studentService: StudentService, private router: Router) {
 
         this.studentService.coinsObs.subscribe(coins => {
             let goldCoinNum = Math.trunc(coins / 10000);
@@ -47,8 +46,7 @@ export class NavbarComponent {
     }
 
     logout() {
-        this.studentService.logout();
-        this.authService.logout();
-        this.router.navigate(['']);
-    }
+      this.studentService.logout();
+      this.router.navigate(['']);
+  }
 }
