@@ -12,7 +12,7 @@ import { SignupService } from '../signup.service';
         <button class="btn btn-primary" (click)="resend()">Resend Email</button>
     </div>
   `,
-  styleUrls: ['./email-confirmation.component.css'],
+  styleUrls: ['email-confirmation.component.css'],
 })
 export class EmailConfirmationComponent {
 

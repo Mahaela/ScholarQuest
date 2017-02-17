@@ -17,7 +17,7 @@ export class CursorButtonsComponent {
     }
 
     changeCursor(i: number) {
-        this.studentService.setCursor(i, event['clientX'], event['clientY']);
+        this.studentService.setCursor(i, event['clientX'], event['clientY']).subscribe();
     }
 
 }

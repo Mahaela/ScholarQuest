@@ -4,24 +4,23 @@ import {
     FormControl,
     Validators,
     FormBuilder,
-    FormArray
 } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
-import { SignupService } from '../signup.service';
+import { AuthService } from '../../auth.service';
 
 @Component({
     selector: 'sq-credentials-signup',
-    templateUrl: './credentials-signup.component.html',
-    styleUrls: ['./credentials-signup.component.css'],
+    templateUrl: 'credentials-signup.component.html',
+    styleUrls: ['credentials-signup.component.css'],
 
 })
 export class CredentialsSignupComponent {
     private signupForm: FormGroup;
     private errorMsg = '0';
-      
-    constructor(private formBuilder: FormBuilder, private router: Router, private signupService: SignupService) {
-               
+
+    constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) {
+
         this.signupForm = formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
@@ -32,37 +31,29 @@ export class CredentialsSignupComponent {
              passwords: formBuilder.group({
                  pwd1: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
                  pwd2: ['', Validators.required]
-             }, { validator: this.pwdMatch }) 
+             }, { validator: this.pwdMatch })
         });
     }
 
     onSubmit() {
-        this.signupService.createUser(this.signupForm.controls['email'].value, this.signupForm.get(['passwords', 'pwd1']).value).subscribe(msg => this.addUserDatatToDatabase(msg)); 
+        //this.signupService.createUser(this.signupForm.controls['email'].value, this.signupForm.get(['passwords', 'pwd1']).value).subscribe(msg => this.addUserDatatToDatabase(msg));
+      this.authService.signup(
+        this.signupForm.controls['email'].value,
+        this.signupForm.get(['passwords', 'pwd1']).value,
+        this.signupForm.controls['firstName'].value,
+        this.signupForm.controls['lastName'].value)
+        .subscribe(data => console.log(data),
+                    error => console.log(error)
+        );
     }
 
     errorMessage(control: FormControl): boolean {
-        if (control.untouched || control.valid) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
-    addUserDatatToDatabase(msg: string) {
-        switch (msg) {
-            case 'userCreated':
-                this.signupService.addUserInfo(this.signupForm.controls['email'].value, this.signupForm.controls['firstName'].value, this.signupForm.controls['lastName'].value).subscribe(x => this.signupService.sendVerificationEmail().subscribe(x => this.router.navigate(['signup/emailconf'])));
-                break;
-            case 'auth/invalid-email':
-                this.errorMsg = '1';
-                break;
-            case 'auth/email-already-in-use':
-                this.errorMsg = '2';
-                break;
-            default:
-                this.errorMsg = 'other';
-        }
+      if (control.untouched || control.valid) {
+        return false;
+      }
+      else {
+        return true;
+      }
     }
 
      pwdErrorMessage(group: FormGroup): boolean {

@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'sq-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css'],
+  templateUrl: 'signup.component.html',
+  styleUrls: ['signup.component.css'],
 
 })
 export class SignupComponent implements OnInit {

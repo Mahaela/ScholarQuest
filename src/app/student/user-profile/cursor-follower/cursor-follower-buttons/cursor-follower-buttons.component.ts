@@ -15,7 +15,7 @@ export class CursorFollowerButtonsComponent {
     }
 
     changeCursorFollower(index: number) {
-        this.studentService.setCursorFollower(index, event.clientX, event.clientY);
+        this.studentService.setCursorFollower(index, event.clientX, event.clientY).subscribe();
     }
 
 }

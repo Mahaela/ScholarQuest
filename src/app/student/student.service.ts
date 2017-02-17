@@ -1,24 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject} from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Http, Response, Headers } from '@angular/http';
 
 declare var firebase;
+
 
 @Injectable()
 export class StudentService {
     private name = '';
     private avatar = 0;
+    private studentID= 0;
     private coins = new BehaviorSubject<number>(0);
     public coinsObs = this.coins.asObservable();
     private cursorFollowerStartXPos = 0;
     private cursorFollowerStartYPos = 0;
+    private cursorFollower = 0;
+    private cursor =0;
     private cursorFollowerStartPosition = new BehaviorSubject<number[]>([0, 0, 0]);
     public cursorFollowerStartPositionObs = this.cursorFollowerStartPosition.asObservable();
     private cursorStartPosition = new BehaviorSubject<number[]>([0, 0, 0]);
     public cursorStartPositionObs = this.cursorStartPosition.asObservable();
     private loaded = false;
 
-    constructor() {
+    constructor(private http: Http) {
     }
 
     setName(name: string) {
@@ -31,13 +36,19 @@ export class StudentService {
 
     setCoins(coins: number) {
         this.coins.next(this.coins.value + coins)
-        firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/coins').set(this.coins.value);
+      return this.http.patch('http://localhost:3000/student/'+ this.studentID, {'coins': coins, 'id': this.studentID})
+        .map((response: Response) => response.json())
+        .catch((error: Response) => Observable.throw(error.json()));
+       // firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/coins').set(this.coins.value);
     }
 
 
     setAvatar(avatar: number) {
-        this.avatar = avatar;
-        firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/avatar' ).set(avatar);
+      return this.http.patch('http://localhost:3000/student/' + this.studentID, {'avatar': avatar, 'id': this.studentID})
+        .map((response: Response) => {
+        console.log(response);
+          response.json()
+        }).catch((error: Response) => Observable.throw(error.json()));
     }
 
     getAvatar(): number {
@@ -49,11 +60,15 @@ export class StudentService {
     }
 
     setCursorFollower(index: number, xPos: number, yPos: number) {
-        this.cursorFollowerStartPosition.next([index, xPos, yPos]);
-        this.cursorFollowerStartXPos = xPos;
-        this.cursorFollowerStartYPos = yPos;
-
-        firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/cursorFollower').set(index);
+      this.cursorFollowerStartPosition.next([index, xPos, yPos]);
+      this.cursorFollowerStartXPos = xPos;
+      this.cursorFollowerStartYPos = yPos;
+      return this.http.patch('http://localhost:3000/student/' + this.studentID, {'cursorFollower': index, 'id': this.studentID})
+        .map((response: Response) => {
+          console.log(response);
+          response.json()
+        }).catch((error: Response) => Observable.throw(error.json()));
+        //firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/cursorFollower').set(index);
     }
 
     getCursorFollower(): number {
@@ -61,31 +76,21 @@ export class StudentService {
     }
 
     setCursor(index: number, xPos: number, yPos: number) {
-        this.cursorStartPosition.next([index, xPos, yPos]);
-        firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/cursor').set(index);
+      this.cursorStartPosition.next([index, xPos, yPos]);
+      return this.http.patch('http://localhost:3000/student/' + this.studentID, {'cursor': index, 'id': this.studentID})
+        .map((response: Response) => {
+          console.log(response);
+          response.json()
+        }).catch((error: Response) => Observable.throw(error.json()));
+        //firebase.database().ref('/users/student' + firebase.auth().currentUser.uid + '/cursor').set(index);
     }
 
-    setUserInfo(): Observable<boolean> {
-        var subject = new Subject<boolean>();
-        this.getUserInfo().subscribe(userInfo => {
-            this.name = userInfo.firstName;
-            this.avatar = Number(userInfo.avatar);
-            this.coins.next(Number(userInfo.coins));
-            this.cursorStartPosition.next([Number(userInfo.cursor), 0, 0]);
-            this.cursorFollowerStartPosition.next([Number(userInfo.cursorFollower), 0, 0]);
-            this.loaded = true;
-            subject.next(true);
-        });
-            return subject.asObservable();
-    }
-
-    getUserInfo(): Observable<any> {
-        var subject = new Subject<any>();
-        var userId = firebase.auth().currentUser.uid;
-        firebase.database().ref('/users/student' + userId).once('value').then(function (snapshot) {
-            subject.next(snapshot.val());
-        });
-        return subject.asObservable();
+    setStudentInfo(student: any) {
+      this.avatar = student.avatar;
+      this.coins = student.coins;
+      this.cursorFollower = student.cursorFollower;
+      this.cursor = student.cursor;
+      this.studentID = student.userId;
     }
 
     getLoaded():boolean {

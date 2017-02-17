@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { StudentService } from './student/student.service';
-import { AuthService } from './auth.service';
+import { AuthService } from './auth/auth.service';
 
 
 @Component({
@@ -18,10 +18,12 @@ export class AppComponent  {
 
     constructor(private studentService: StudentService, private authService: AuthService) {
         this.loaded = new Promise(resolve => {
-            this.authService.isAuthenticated().subscribe(isLoggedIn => {
-                this.loggedIn = isLoggedIn;
-                resolve(true);
-            });
+          this.loggedIn = true;
+          resolve(true);
+          // this.authService.isAuthenticated().subscribe(isLoggedIn => {
+          //   console.log("in subsciption");
+
+          //  });
         })
         document.body.style.backgroundImage = "url('../assets/backgrounds/stone2.png')";
     }
@@ -32,5 +34,5 @@ export class AppComponent  {
         this.xPos = event.clientX + xOffset;
         this.yPos = event.clientY + yOffset;
     }
-    
+
 }

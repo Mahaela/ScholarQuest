@@ -43,7 +43,7 @@ export class AvatarComponent  {
             }
             this.firstAvatarState = 'hidden';
             this.secondAvatarState = 'visible';
-            this.studentService.setAvatar(this.avatarImgs.indexOf(this.secondAvatarImg));
+            this.studentService.setAvatar(this.avatarImgs.indexOf(this.secondAvatarImg)).subscribe(data => console.log(data));
         }
         else {
             if (this.avatarImgs.indexOf(this.secondAvatarImg) == this.avatarImgs.length - 1) {
@@ -51,7 +51,7 @@ export class AvatarComponent  {
             }
             else {
                 this.firstAvatarImg = this.avatarImgs[this.avatarImgs.indexOf(this.secondAvatarImg) + 1];
-                }  
+                }
             this.firstAvatarState = 'visible';
             this.secondAvatarState = 'hidden';
             this.studentService.setAvatar(this.avatarImgs.indexOf(this.firstAvatarImg));

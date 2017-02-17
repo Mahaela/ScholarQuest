@@ -1,4 +1,4 @@
-/// <reference path="app/signup/signup.service.ts" />
+/// <reference path="app/auth/signup/signup.service.ts" />
 import './polyfills.ts';
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';

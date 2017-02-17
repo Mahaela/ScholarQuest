@@ -2,7 +2,7 @@
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 
-import { AuthService } from './auth.service';
+import { AuthService } from './auth/auth.service';
 
 @Injectable()
 export class EmailGuard implements CanActivate {
