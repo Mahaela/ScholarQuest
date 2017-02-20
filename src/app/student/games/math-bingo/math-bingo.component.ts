@@ -148,7 +148,6 @@ export class MathBingoComponent implements AfterViewInit {
 
     checkCorrect(pos) {
         pos = Number(pos);
-
         if (this.squares[pos][0].nativeElement.textContent == this.solution) {
             this.renderer.setElementAttribute(this.squares[pos][0].nativeElement, 'id', null);
             clearInterval(this.clock);
@@ -164,9 +163,7 @@ export class MathBingoComponent implements AfterViewInit {
                 this.gameFinished = true;
                 this.timeLeft = 0;
                 this.equation = '';
-                if (this.studentService.getLoaded()) {
-                    this.studentService.setCoins(this.score);
-                }
+                this.studentService.setCoins(this.score).subscribe();
             }
         }
         else (this.setScore(-1));
@@ -225,7 +222,7 @@ export class MathBingoComponent implements AfterViewInit {
         //check right
         x = pos + 1;
         while (x % 5 != 0) {
-            if (this.squares[x][1]) { 
+            if (this.squares[x][1]) {
                 winningSquares.push(x);
                  x += 1;
              }
@@ -288,4 +285,3 @@ export class MathBingoComponent implements AfterViewInit {
     }
 }
 
-       

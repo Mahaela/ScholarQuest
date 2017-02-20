@@ -1,50 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject} from 'rxjs/Rx';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Http, Response, Headers } from "@angular/http";
 import 'rxjs/Rx';
 import { StudentService } from '../student/student.service';
 
-declare var firebase
+
 
 @Injectable()
 export class AuthService {
-    private loggedIn = new BehaviorSubject<boolean>(false);
-    public loggedInObs = this.loggedIn.asObservable();
-
-    constructor(private studentService: StudentService, private http: Http) { }
-
-    isAuthenticated(): Observable<boolean> {
-
-        var subject = new Subject<boolean>();
-        // firebase.auth().onAuthStateChanged(user => {
-        //     if (user) {
-        //         if (!this.studentService.getLoaded()) {
-        //             this.studentService.setUserInfo().subscribe(() => subject.next(true));
-        //         }
-        //         else {
-        //             subject.next(true);
-        //         }
-        //     }
-        //     else {
-        //         subject.next(false);
-        //     }
-        //  });
-      subject.next(false);
-         return subject.asObservable();
-    }
-
-    isEmailVerified() {
-        var subject = new Subject<boolean>();
-        firebase.auth().onAuthStateChanged(user => {
-            if (user && user.emailVerified) {
-                subject.next(true);
-            }
-            else {
-                subject.next(false);
-            }
-        });
-        return subject.asObservable();
+    private _loggedIn = new Subject<boolean>();
+    constructor(private studentService: StudentService, private http: Http) {
+      this._loggedIn.next(localStorage.getItem('token') !== null)
     }
 
     signup(email: string, password: string, firstName: string, lastName: string): Observable<any> {
@@ -63,8 +29,15 @@ export class AuthService {
         .catch((error: Response) => Observable.throw(error.json()));
 
     }
+    isEmailVerified(){
+      return true;
+    }
+    isAuthenticated(){
+      return true;
+    }
 
   login(email: string, password: string): Observable<any> {
+    this._loggedIn.next(true);
     var user = {
       'email': email,
       'password': password,
@@ -76,9 +49,17 @@ export class AuthService {
 
   logout() {
     localStorage.clear()
+    this.studentService.logout();
+    this._loggedIn.next(false);
   }
 
   isLoggedIn(){
-      return localStorage.getItem('token') !== null;
+      return this._loggedIn.asObservable();
+  }
+
+  getUserInfo(){
+    return this.http.post('http://localhost:3000/student/getStudent', {'uid': localStorage.getItem('userId')})
+      .map((response: Response) => response.json())
+      .catch((error: Response) => Observable.throw(error.json()));
   }
 }

@@ -62,6 +62,31 @@ router.post('/signin', function(req, res, next){
       });
     });
 });
+
+router.post('/getStudent', function(req, res, next){
+  Student.findById(req.body.uid, function(err, student) {
+    if(err){
+      return res.status(500).json({
+        title: 'An error occured',
+        error: err
+      });
+    }
+    if(!student){
+      return res.status(401).json({
+        title: 'Login failed',
+        error: {message: 'Invalid login credentials'}
+      });
+    }
+    res.status(200).json({
+      message: 'Successfully logged in',
+      userId: student._id,
+      avatar: student.avatar,
+      coins: student.coins,
+      cursor: student.cursor,
+      cursorFollower: student.cursorFollower
+    });
+  });
+});
 // router.use('/', function(req, res, next){
 //   console.log(req.query.token);
 //   jwt.verify(req.query.token, 'gamez', function(err, decoded){
@@ -78,14 +103,12 @@ router.post('/signin', function(req, res, next){
 router.patch('/:id', function(req, res, next){
   Student.findById(req.params.id, function(err, student) {
     if (err) {
-      console.log("error" + err);
       return res.status(500).json({
         title: 'An error occured',
         error: err
       });
     }
     if (!student) {
-
       return res.status(500).json({
         title: 'No user found',
         error: {message: 'User not found'}
@@ -103,7 +126,6 @@ router.patch('/:id', function(req, res, next){
     else if(req.body.cursorFollower) {
       student.cursorFollower = req.body.cursorFollower;
     }
-
     student.save(function(err, result){
       if (err) {
         return res.status(500).json({
@@ -118,95 +140,5 @@ router.patch('/:id', function(req, res, next){
   });
 });
 
-router.patch('/coins:id', function(req, res, next){
-  Student.findById(req.params.id, function(err, message) {
-    if (err) {
-      return res.status(500).json({
-        title: 'An error occured',
-        error: err
-      });
-    }
-    if (!student) {
-      return res.status(500).json({
-        title: 'No user found',
-        error: {message: 'User not found'}
-      });
-    }
-    student.coins = req.body.coins;
-    student.save(function(err, result){
-      if (err) {
-        console.log("error " + err );
-        return res.status(500).json({
-          title: 'An error occurred',
-          error: err
-        });
-      }
-      res.status(200).json({
-        message: 'Updated coins',
-      });
-    });
-  });
-});
 
-router.patch('/cursor:id', function(req, res, next){
-  Student.findById(req.params.id, function(err, message) {
-    if (err) {
-      return res.status(500).json({
-        title: 'An error occured',
-        error: err
-      });
-    }
-    if (!student) {
-      return res.status(500).json({
-        title: 'No user found',
-        error: {message: 'User not found'}
-      });
-    }
-    student.cursor = req.body.cursor;
-    student.save(function(err, result){
-      if (err) {
-        console.log("error " + err );
-        return res.status(500).json({
-          title: 'An error occurred',
-          error: err
-        });
-      }
-      res.status(200).json({
-        message: 'Updated cursor',
-        obj: result
-      });
-    });
-  });
-});
-
-router.patch('/cursorFollower:id', function(req, res, next){
-  Student.findById(req.params.id, function(err, message) {
-    if (err) {
-      return res.status(500).json({
-        title: 'An error occured',
-        error: err
-      });
-    }
-    if (!student) {
-      return res.status(500).json({
-        title: 'No user found',
-        error: {message: 'User not found'}
-      });
-    }
-    student.cursorFollower = req.body.cursorFollower;
-    student.save(function(err, result){
-      if (err) {
-        console.log("error " + err );
-        return res.status(500).json({
-          title: 'An error occurred',
-          error: err
-        });
-      }
-      res.status(200).json({
-        message: 'Updated cursorFollower',
-        obj: result
-      });
-    });
-  });
-});
 module.exports = router;

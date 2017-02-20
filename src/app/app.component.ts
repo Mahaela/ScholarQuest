@@ -14,17 +14,15 @@ export class AppComponent  {
     private yPos = 0;
     private cursorFollower = '0';
     private loaded: Promise<boolean>;
-    private loggedIn = false;
 
     constructor(private studentService: StudentService, private authService: AuthService) {
         this.loaded = new Promise(resolve => {
-          this.loggedIn = true;
+          if(authService.isLoggedIn()){
+            this.authService.getUserInfo()
+              .subscribe(data => studentService.setStudentInfo(data));
+          }
           resolve(true);
-          // this.authService.isAuthenticated().subscribe(isLoggedIn => {
-          //   console.log("in subsciption");
-
-          //  });
-        })
+        });
         document.body.style.backgroundImage = "url('../assets/backgrounds/stone2.png')";
     }
 
