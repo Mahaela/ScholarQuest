@@ -17,13 +17,15 @@ export class AppComponent  {
 
     constructor(private studentService: StudentService, private authService: AuthService) {
         this.loaded = new Promise(resolve => {
-          if(authService.isLoggedIn()){
-            this.authService.getUserInfo()
-              .subscribe(data => studentService.setStudentInfo(data));
-          }
-          resolve(true);
+          authService.getUserInfo().subscribe(data => {this.setupStudent(data);
+            resolve(true)},
+             error => resolve(true));
         });
         document.body.style.backgroundImage = "url('../assets/backgrounds/stone2.png')";
+    }
+    setupStudent(data: any){
+      this.studentService.setStudentInfo(data);
+      this.authService.setLoggedIn(true);
     }
 
     mouseMove($event) {
@@ -32,5 +34,4 @@ export class AppComponent  {
         this.xPos = event.clientX + xOffset;
         this.yPos = event.clientY + yOffset;
     }
-
 }

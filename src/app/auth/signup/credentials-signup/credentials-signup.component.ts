@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
     FormGroup,
     FormControl,
@@ -17,7 +17,8 @@ import { AuthService } from '../../auth.service';
 })
 export class CredentialsSignupComponent {
     private signupForm: FormGroup;
-    private errorMsg = '0';
+    private emailInUseError = false;
+    private serverError = false;
 
     constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) {
 
@@ -36,15 +37,24 @@ export class CredentialsSignupComponent {
     }
 
     onSubmit() {
-        //this.signupService.createUser(this.signupForm.controls['email'].value, this.signupForm.get(['passwords', 'pwd1']).value).subscribe(msg => this.addUserDatatToDatabase(msg));
       this.authService.signup(
         this.signupForm.controls['email'].value,
         this.signupForm.get(['passwords', 'pwd1']).value,
         this.signupForm.controls['firstName'].value,
         this.signupForm.controls['lastName'].value)
-        .subscribe(data => console.log(data),
-                    error => console.log(error)
+        .subscribe(data => this.router.navigate(['/login']),
+                    error => this.handleError(error)
         );
+    }
+    handleError(error: any){
+      if(error.error.name = "ValidationError"){
+        this.emailInUseError = true;
+        this.serverError = false;
+      }
+      else{
+        this.serverError = true;
+        this.emailInUseError = false;
+      }
     }
 
     errorMessage(control: FormControl): boolean {

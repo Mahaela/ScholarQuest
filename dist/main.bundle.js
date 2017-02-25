@@ -7828,8 +7828,7 @@ var AuthService = (function () {
     function AuthService(studentService, http) {
         this.studentService = studentService;
         this.http = http;
-        this._loggedIn = new __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__["Subject"]();
-        this._loggedIn.next(localStorage.getItem('token') !== null);
+        this._loggedIn = new __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__["BehaviorSubject"](false);
     }
     AuthService.prototype.signup = function (email, password, firstName, lastName) {
         var user = {
@@ -7846,6 +7845,11 @@ var AuthService = (function () {
             .map(function (response) { return response.json(); })
             .catch(function (error) { return __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__["Observable"].throw(error.json()); });
     };
+    AuthService.prototype.getUserInfo = function () {
+        return this.http.post('http://localhost:3000/student/getStudent', { 'uid': localStorage.getItem('userId') })
+            .map(function (response) { return response.json(); })
+            .catch(function (error) { return __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__["Observable"].throw(error.json()); });
+    };
     AuthService.prototype.isEmailVerified = function () {
         return true;
     };
@@ -7853,7 +7857,6 @@ var AuthService = (function () {
         return true;
     };
     AuthService.prototype.login = function (email, password) {
-        this._loggedIn.next(true);
         var user = {
             'email': email,
             'password': password,
@@ -7870,10 +7873,11 @@ var AuthService = (function () {
     AuthService.prototype.isLoggedIn = function () {
         return this._loggedIn.asObservable();
     };
-    AuthService.prototype.getUserInfo = function () {
-        return this.http.post('http://localhost:3000/student/getStudent', { 'uid': localStorage.getItem('userId') })
-            .map(function (response) { return response.json(); })
-            .catch(function (error) { return __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__["Observable"].throw(error.json()); });
+    AuthService.prototype.getLoggedInValue = function () {
+        return this._loggedIn.value;
+    };
+    AuthService.prototype.setLoggedIn = function (loggedIn) {
+        this._loggedIn.next(loggedIn);
     };
     AuthService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(), 
@@ -48709,13 +48713,17 @@ var AppComponent = (function () {
         this.yPos = 0;
         this.cursorFollower = '0';
         this.loaded = new Promise(function (resolve) {
-            if (authService.isLoggedIn()) {
-                _this.authService.getUserInfo().subscribe(function (data) { return studentService.setStudentInfo(data); });
-            }
-            resolve(true);
+            authService.getUserInfo().subscribe(function (data) {
+                _this.setupStudent(data);
+                resolve(true);
+            }, function (error) { return resolve(true); });
         });
         document.body.style.backgroundImage = "url('../assets/backgrounds/stone2.png')";
     }
+    AppComponent.prototype.setupStudent = function (data) {
+        this.studentService.setStudentInfo(data);
+        this.authService.setLoggedIn(true);
+    };
     AppComponent.prototype.mouseMove = function ($event) {
         var xOffset = Math.max(document.documentElement.scrollLeft, document.body.scrollLeft);
         var yOffset = Math.max(document.documentElement.scrollTop, document.body.scrollTop);
@@ -48767,6 +48775,7 @@ var LoginComponent = (function () {
         this.router = router;
         this.studentService = studentService;
         this.incUsernameOrPwd = false;
+        this.serverError = false;
         this.loginForm = formBuilder.group({
             email: ['', __WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* Validators */].required],
             pwd: ['', __WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* Validators */].required]
@@ -48775,28 +48784,24 @@ var LoginComponent = (function () {
     LoginComponent.prototype.onSubmit = function () {
         var _this = this;
         this.authService.login(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value)
-            .subscribe(function (data) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.userId);
-            _this.studentService.setStudentInfo(data);
-            _this.router.navigate(['profile']);
-        }, function (error) { return console.error(error); });
-        // this.loginService.login(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value).subscribe(msg => {
-        //     switch (msg) {
-        //         case 'loggedIn':
-        //             this.studentService.setUserInfo().subscribe(msg => {
-        //                 this.router.navigate(['profile']);
-        //             });
-        //             break;
-        //         case "emailVerify":
-        //             this.loginService.sendEmail();
-        //             this.router.navigate(['signup/emailconf'])
-        //             break;
-        //         default:
-        //             this.incUsernameOrPwd = true;
-        //             break;
-        //      }
-        //   });
+            .subscribe(function (data) { return _this.logIn(data); }, function (error) { return _this.handleError(error); });
+    };
+    LoginComponent.prototype.logIn = function (data) {
+        this.authService.setLoggedIn(true);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
+        this.studentService.setStudentInfo(data);
+        this.router.navigate(['profile']);
+    };
+    LoginComponent.prototype.handleError = function (error) {
+        if (error.error.message = "Invalid login credentials") {
+            this.incUsernameOrPwd = true;
+            this.serverError = false;
+        }
+        else {
+            this.serverError = true;
+            this.incUsernameOrPwd = false;
+        }
     };
     LoginComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -48881,7 +48886,8 @@ var CredentialsSignupComponent = (function () {
         this.formBuilder = formBuilder;
         this.router = router;
         this.authService = authService;
-        this.errorMsg = '0';
+        this.emailInUseError = false;
+        this.serverError = false;
         this.signupForm = formBuilder.group({
             firstName: ['', __WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* Validators */].required],
             lastName: ['', __WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* Validators */].required],
@@ -48896,9 +48902,19 @@ var CredentialsSignupComponent = (function () {
         });
     }
     CredentialsSignupComponent.prototype.onSubmit = function () {
-        //this.signupService.createUser(this.signupForm.controls['email'].value, this.signupForm.get(['passwords', 'pwd1']).value).subscribe(msg => this.addUserDatatToDatabase(msg));
+        var _this = this;
         this.authService.signup(this.signupForm.controls['email'].value, this.signupForm.get(['passwords', 'pwd1']).value, this.signupForm.controls['firstName'].value, this.signupForm.controls['lastName'].value)
-            .subscribe(function (data) { return console.log(data); }, function (error) { return console.log(error); });
+            .subscribe(function (data) { return _this.router.navigate(['/login']); }, function (error) { return _this.handleError(error); });
+    };
+    CredentialsSignupComponent.prototype.handleError = function (error) {
+        if (error.error.name = "ValidationError") {
+            this.emailInUseError = true;
+            this.serverError = false;
+        }
+        else {
+            this.serverError = true;
+            this.emailInUseError = false;
+        }
     };
     CredentialsSignupComponent.prototype.errorMessage = function (control) {
         if (control.untouched || control.valid) {
@@ -71107,7 +71123,7 @@ module.exports = ""
 /* 807 */
 /***/ function(module, exports) {
 
-module.exports = "#wrapper{\r\n    height: 500px;\r\n    width: 510px;\r\n    margin: auto;\r\n}\r\n#bwrapper{\r\n    text-align: center;\r\n}\r\n\r\ninput{\r\n    width: 505px;\r\n}\r\n\r\n#error{\r\n    color: orangered;\r\n    text-align: center;\r\n}\r\n\r\nh1{\r\n   text-align: center;\r\n}\r\n\r\n.container{\r\n    background-color:cornsilk;\r\n    height: 500px;\r\n}"
+module.exports = "#wrapper{\r\n    height: 500px;\r\n    width: 510px;\r\n    margin: auto;\r\n}\r\n#bwrapper{\r\n    text-align: center;\r\n}\r\n\r\ninput{\r\n    width: 505px;\r\n}\r\n\r\n.error{\r\n    color: orangered;\r\n    text-align: center;\r\n}\r\n\r\nh1{\r\n   text-align: center;\r\n}\r\n\r\n.container{\r\n    background-color:cornsilk;\r\n    height: 500px;\r\n}\r\n"
 
 /***/ },
 /* 808 */
@@ -71227,7 +71243,7 @@ module.exports = "<div *ngIf=\"loaded | async\">\r\n    <sq-navbar></sq-navbar>\
 /* 827 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n  <div class=\"row\">\r\n    <div class=\"col-md\" >\r\n      <h1>Login</h1>\r\n       <hr />\r\n        <div id=\"wrapper\">\r\n            <form [formGroup]=\"loginForm\" (ngSubmit)=\"onSubmit()\">\r\n                <label for=\"email\" style=\"width:500px\">Email</label>\r\n                <div class=\"form-group name\">\r\n                    <input type=\"text\"\r\n                        class=\"form-control\"\r\n                        id=\"email\"\r\n                        formControlName=\"email\">\r\n                </div>            \r\n                <div class=\"form-group name\">\r\n                    <label for=\"email\" style=\"width:500px\">Password</label>\r\n                    <input type=\"password\"\r\n                        class=\"form-control\"\r\n                        id=\"password\"\r\n                        formControlName=\"pwd\">\r\n                </div>\r\n                 <div id=\"bwrapper\">\r\n                   <button type=\"submit\" class=\"btn btn-primary\" [disabled]=\"!loginForm.valid\">Submit</button> <br /><br />             \r\n               </div>\r\n                 <p *ngIf=\"incUsernameOrPwd\" id=\"error\">Incorrect Username or Password</p>\r\n            </form>\r\n        </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"container\">\r\n  <div class=\"row\">\r\n    <div class=\"col-md\" >\r\n      <h1>Login</h1>\r\n       <hr />\r\n        <div id=\"wrapper\">\r\n            <form [formGroup]=\"loginForm\" (ngSubmit)=\"onSubmit()\">\r\n                <label for=\"email\" style=\"width:500px\">Email</label>\r\n                <div class=\"form-group name\">\r\n                    <input type=\"text\"\r\n                        class=\"form-control\"\r\n                        id=\"email\"\r\n                        formControlName=\"email\">\r\n                </div>\r\n                <div class=\"form-group name\">\r\n                    <label for=\"email\" style=\"width:500px\">Password</label>\r\n                    <input type=\"password\"\r\n                        class=\"form-control\"\r\n                        id=\"password\"\r\n                        formControlName=\"pwd\">\r\n                </div>\r\n                 <div id=\"bwrapper\">\r\n                   <button type=\"submit\" class=\"btn btn-primary\" [disabled]=\"!loginForm.valid\">Submit</button> <br /><br />\r\n               </div>\r\n                 <p *ngIf=\"incUsernameOrPwd\" class=\"error\">Incorrect Username or Password</p>\r\n                <p *ngIf=\"serverError\" class=\"error\">An error has occurred. Please try again later</p>\r\n            </form>\r\n        </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ },
 /* 828 */
@@ -71239,7 +71255,7 @@ module.exports = "<div id=\"owrapper\">\r\n    <div id=\"iwrapper\">\r\n        
 /* 829 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n  <div class=\"row\">\r\n    <div class=\"col-md\" >\r\n      <h1>Create your Account</h1>\r\n       <hr />\r\n        <div id=\"wrapper\">\r\n            <form [formGroup]=\"signupForm\" (ngSubmit)=\"onSubmit()\">\r\n                <label for=\"firstName\" style=\"width:500px\">Name</label>\r\n                <div class=\"form-group name\">\r\n                    <input type=\"text\"\r\n                        class=\"form-control\"\r\n                        id=\"firstName\"\r\n                        placeholder=\"First\"\r\n                        formControlName=\"firstName\"\r\n                        >\r\n                    <p *ngIf=\"!errorMessage(signupForm.controls['firstName'])\">&nbsp;</p>\r\n                    <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['firstName'])\">\r\n                        Invalid First Name\r\n                    </p>\r\n                </div>            \r\n                <div class=\"form-group name\">\r\n                    <input type=\"text\"\r\n                        class=\"form-control\"\r\n                        id=\"lastName\"\r\n                        placeholder=\"Last\"\r\n                        formControlName=\"lastName\">\r\n                    <p *ngIf=\"!errorMessage(signupForm.controls['lastName'])\">&nbsp;</p>\r\n                    <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['lastName'])\">\r\n                        Invalid Last Name\r\n                    </p>\r\n                </div>   \r\n                <div class=\"form-group\">\r\n                    <label for=\"email\">E-Mail</label>\r\n                    <input type=\"text\"\r\n                         class=\"form-control\"\r\n                         id=\"email\"\r\n                         formControlName=\"email\">\r\n                    <p *ngIf=\"!errorMessage(signupForm.controls['email'])\">&nbsp;</p>\r\n                    <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['email'])\">\r\n                        Invalid Email\r\n                    </p>\r\n                </div>\r\n                <div formGroupName=\"passwords\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"pwd1\">Password</label>\r\n                            <input type=\"password\"\r\n                             class=\"form-control\"\r\n                             id=\"pwd1\"\r\n                             formControlName=\"pwd1\">\r\n                        <p *ngIf=\"!errorMessage(signupForm.controls['passwords'].controls['pwd1'])\">&nbsp;</p>\r\n                        <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['passwords'].controls['pwd1'])\">\r\n                            Invalid Password\r\n                        </p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"pwd2\">Confirm your Password</label>\r\n                        <input type=\"password\"\r\n                               class=\"form-control\"\r\n                               id=\"pwd2\"\r\n                               formControlName=\"pwd2\">\r\n                        <p *ngIf=\"!errorMessage(signupForm.controls['passwords'].controls['pwd2'])\">&nbsp;</p>\r\n                        <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['passwords'].controls['pwd2']) || pwdErrorMessage(signupForm.controls['passwords'])\">\r\n                            Invalid Password\r\n                        </p>\r\n                    </div>\r\n                 </div>\r\n               <div id=\"bwrapper\">\r\n                   <button type=\"submit\" class=\"btn btn-primary\" [disabled]=\"!signupForm.valid\">Submit</button>\r\n               </div><br />\r\n            </form>\r\n            <div [ngSwitch]=\"errorMsg\" class=\"error serverError\">\r\n                <p *ngSwitchCase=\"1\">Email is not valid</p>\r\n                <p *ngSwitchCase=\"2\">Email is already in use</p>\r\n                <p *ngSwitchCase=\"other\">An unknown error has occured. Please try again </p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n\r\n\r\n\r\n"
+module.exports = "<div class=\"container\">\r\n  <div class=\"row\">\r\n    <div class=\"col-md\" >\r\n      <h1>Create your Account</h1>\r\n       <hr />\r\n        <div id=\"wrapper\">\r\n            <form [formGroup]=\"signupForm\" (ngSubmit)=\"onSubmit()\">\r\n                <label for=\"firstName\" style=\"width:500px\">Name</label>\r\n                <div class=\"form-group name\">\r\n                    <input type=\"text\"\r\n                        class=\"form-control\"\r\n                        id=\"firstName\"\r\n                        placeholder=\"First\"\r\n                        formControlName=\"firstName\"\r\n                        >\r\n                    <p *ngIf=\"!errorMessage(signupForm.controls['firstName'])\">&nbsp;</p>\r\n                    <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['firstName'])\">\r\n                        Invalid First Name\r\n                    </p>\r\n                </div>\r\n                <div class=\"form-group name\">\r\n                    <input type=\"text\"\r\n                        class=\"form-control\"\r\n                        id=\"lastName\"\r\n                        placeholder=\"Last\"\r\n                        formControlName=\"lastName\">\r\n                    <p *ngIf=\"!errorMessage(signupForm.controls['lastName'])\">&nbsp;</p>\r\n                    <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['lastName'])\">\r\n                        Invalid Last Name\r\n                    </p>\r\n                </div>\r\n                <div class=\"form-group\">\r\n                    <label for=\"email\">E-Mail</label>\r\n                    <input type=\"text\"\r\n                         class=\"form-control\"\r\n                         id=\"email\"\r\n                         formControlName=\"email\">\r\n                    <p *ngIf=\"!errorMessage(signupForm.controls['email'])\">&nbsp;</p>\r\n                    <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['email'])\">\r\n                        Invalid Email\r\n                    </p>\r\n                </div>\r\n                <div formGroupName=\"passwords\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"pwd1\">Password</label>\r\n                            <input type=\"password\"\r\n                             class=\"form-control\"\r\n                             id=\"pwd1\"\r\n                             formControlName=\"pwd1\">\r\n                        <p *ngIf=\"!errorMessage(signupForm.controls['passwords'].controls['pwd1'])\">&nbsp;</p>\r\n                        <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['passwords'].controls['pwd1'])\">\r\n                            Invalid Password\r\n                        </p>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"pwd2\">Confirm your Password</label>\r\n                        <input type=\"password\"\r\n                               class=\"form-control\"\r\n                               id=\"pwd2\"\r\n                               formControlName=\"pwd2\">\r\n                        <p *ngIf=\"!errorMessage(signupForm.controls['passwords'].controls['pwd2'])\">&nbsp;</p>\r\n                        <p class=\"error\" *ngIf=\"errorMessage(signupForm.controls['passwords'].controls['pwd2']) || pwdErrorMessage(signupForm.controls['passwords'])\">\r\n                            Invalid Password\r\n                        </p>\r\n                    </div>\r\n                 </div>\r\n               <div id=\"bwrapper\">\r\n                   <button type=\"submit\" class=\"btn btn-primary\" [disabled]=\"!signupForm.valid\">Submit</button>\r\n               </div><br />\r\n            </form>\r\n            <p *ngIf=\"emailInUseError\" class=\"error serverError\">Email is already in use</p>\r\n            <p *ngIf=\"serverError\" class=\"error serverError\">An unknown error has occurred. Please try again </p>\r\n        </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n\r\n\r\n\r\n"
 
 /***/ },
 /* 830 */

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject} from 'rxjs/Rx';
-import { Http, Response, Headers } from "@angular/http";
+import { Observable, BehaviorSubject} from 'rxjs/Rx';
+import { Http, Response } from "@angular/http";
 import 'rxjs/Rx';
 import { StudentService } from '../student/student.service';
 
@@ -8,10 +8,8 @@ import { StudentService } from '../student/student.service';
 
 @Injectable()
 export class AuthService {
-    private _loggedIn = new Subject<boolean>();
-    constructor(private studentService: StudentService, private http: Http) {
-      this._loggedIn.next(localStorage.getItem('token') !== null)
-    }
+    private _loggedIn = new BehaviorSubject<boolean>(false);
+    constructor(private studentService: StudentService, private http: Http) {}
 
     signup(email: string, password: string, firstName: string, lastName: string): Observable<any> {
         var user = {
@@ -27,8 +25,15 @@ export class AuthService {
       return this.http.post('http://localhost:3000/student', user)
         .map((response: Response) => response.json())
         .catch((error: Response) => Observable.throw(error.json()));
-
     }
+
+  getUserInfo(){
+    return this.http.post('http://localhost:3000/student/getStudent', {'uid': localStorage.getItem('userId')})
+      .map((response: Response) => response.json())
+      .catch((error: Response) => Observable.throw(error.json()));
+
+  }
+
     isEmailVerified(){
       return true;
     }
@@ -37,7 +42,6 @@ export class AuthService {
     }
 
   login(email: string, password: string): Observable<any> {
-    this._loggedIn.next(true);
     var user = {
       'email': email,
       'password': password,
@@ -53,13 +57,15 @@ export class AuthService {
     this._loggedIn.next(false);
   }
 
-  isLoggedIn(){
+  isLoggedIn(): Observable<boolean>{
       return this._loggedIn.asObservable();
   }
 
-  getUserInfo(){
-    return this.http.post('http://localhost:3000/student/getStudent', {'uid': localStorage.getItem('userId')})
-      .map((response: Response) => response.json())
-      .catch((error: Response) => Observable.throw(error.json()));
+  getLoggedInValue(): boolean{
+      return this._loggedIn.value;
+  }
+
+  setLoggedIn(loggedIn: boolean){
+    this._loggedIn.next(loggedIn);
   }
 }

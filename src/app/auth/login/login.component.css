@@ -11,7 +11,7 @@ input{
     width: 505px;
 }
 
-#error{
+.error{
     color: orangered;
     text-align: center;
 }

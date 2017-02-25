@@ -21,6 +21,7 @@ import { StudentService } from '../../student/student.service';
 export class LoginComponent {
     loginForm: FormGroup;
     incUsernameOrPwd: boolean = false;
+    serverError: boolean = false;
 
     constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private studentService: StudentService) {
         this.loginForm = formBuilder.group({
@@ -32,29 +33,26 @@ export class LoginComponent {
     onSubmit() {
       this.authService.login(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value)
         .subscribe(
-          data => {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.userId);
-            this.studentService.setStudentInfo(data);
-            this.router.navigate(['profile']);
-          },
-          error => console.error(error)
+          data => this.logIn(data),
+          error => this.handleError(error)
         )
-      // this.loginService.login(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value).subscribe(msg => {
-        //     switch (msg) {
-        //         case 'loggedIn':
-        //             this.studentService.setUserInfo().subscribe(msg => {
-        //                 this.router.navigate(['profile']);
-        //             });
-        //             break;
-        //         case "emailVerify":
-        //             this.loginService.sendEmail();
-        //             this.router.navigate(['signup/emailconf'])
-        //             break;
-        //         default:
-        //             this.incUsernameOrPwd = true;
-        //             break;
-        //      }
-        //   });
+     }
+     logIn(data: any){
+      this.authService.setLoggedIn(true);
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId);
+      this.studentService.setStudentInfo(data);
+      this.router.navigate(['profile']);
+     }
+
+     handleError(error: any) {
+       if (error.error.message = "Invalid login credentials") {
+         this.incUsernameOrPwd = true;
+         this.serverError = false;
+       }
+       else {
+         this.serverError = true;
+         this.incUsernameOrPwd = false;
+       }
      }
 }
